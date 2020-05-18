@@ -1,0 +1,21 @@
+name: download_assets
+description: Download and uncompress assets
+version: 1.0.0
+author: Edjostenes
+homepage: https://github.com/edjostenes
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dio: ^3.0.9
+  path_provider: ^1.6.8
+  archive: ^2.0.13
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
