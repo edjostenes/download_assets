@@ -9,19 +9,22 @@ import 'package:path_provider/path_provider.dart';
 class AssetsController {
   
   static String _assetsDir;
+  static String get assetsDir => _assetsDir;
 
-  static Future<bool> _assetsDirAlreadyExists() async => await Directory(_assetsDir).exists();
+  static Future init() async {
+    String rootDir = (await getApplicationDocumentsDirectory()).path;
+    _assetsDir = '$rootDir/assets';
+  }
 
   /// If assets directory was already create it assumes that the content was already downloaded.
-  static Future<bool> assetsDownloaded() async => await _assetsDirAlreadyExists();
+  static Future<bool> assetsDirAlreadyExists() async => await Directory(_assetsDir).exists();
 
   /// Clear all download assets, if it already exists on local storage.
   static Future clearAssets() async {
-    bool assetsDirExists = await _assetsDirAlreadyExists();
+    bool assetsDirExists = await assetsDirAlreadyExists();
 
-    if (!assetsDirExists){
+    if (!assetsDirExists)
       return;
-    }
 
     await Directory(_assetsDir).delete(recursive: true);
   }
@@ -41,8 +44,7 @@ class AssetsController {
       if (assetsUrl == null || assetsUrl.isEmpty)
         throw DownloadAssetsException("AssetUrl param can't be empty");
 
-      String rootDir = (await getApplicationDocumentsDirectory()).path;
-      _assetsDir = '$rootDir/assets';
+      await clearAssets();
       await Directory(_assetsDir).create();
       String fullPath = '$_assetsDir/assets.zip';
       double totalProgress = 0;

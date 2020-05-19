@@ -1,7 +1,7 @@
 name: download_assets
 description: Download and uncompress assets
-version: 1.0.1
-homepage: https://github.com/edjostenes
+version: 1.0.2
+homepage: https://github.com/edjostenes/download_assets
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
