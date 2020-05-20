@@ -6,7 +6,7 @@ import 'package:download_assets/src/download_assets_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
-class AssetsController {
+class DownloadAssetsController {
   
   static String _assetsDir;
   static String get assetsDir => _assetsDir;
