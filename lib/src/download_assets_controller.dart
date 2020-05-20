@@ -32,13 +32,15 @@ class DownloadAssetsController {
   /// Start download of your content to local storage, uncompress all data and delete
   /// the compressed file.
   /// [assetsUrl] -> Specify the url for your compressed file. (http://{YOUR_DOMAIN}:{FILE_NAME}.zip
-  /// [progressCallback] -> It's not required. If you provide this callback it will be called after each iteration
+  /// [onProgress] -> It's not required. If you provide this callback it will be called after each iteration
   /// returning the actual progress
-  /// [errorCallback] -> It's not required. If you provider this callback it will be called when any exception to occur
+  /// [onError] -> It's not required. If you provider this callback it will be called when any exception to occur
+  /// [onComplete] -> It's not required. Called if the progress was completed with success
   static Future startDownload({
     @required String assetsUrl,
-    Function(double) progressCallback,
-    Function(Exception) errorCallback,
+    Function(double) onProgress,
+    Function(Exception) onError,
+    Function onComplete,
   }) async {
     try {
       if (assetsUrl == null || assetsUrl.isEmpty)
@@ -48,6 +50,9 @@ class DownloadAssetsController {
       await Directory(_assetsDir).create();
       String fullPath = '$_assetsDir/assets.zip';
       double totalProgress = 0;
+
+      if (onProgress != null)
+        onProgress(0);
 
       await Dio().download(
         assetsUrl,
@@ -62,8 +67,8 @@ class DownloadAssetsController {
             totalProgress = progress - (progress * 0.2);
           }
 
-          if (progressCallback != null)
-            progressCallback(totalProgress <= 0 ? 0 : totalProgress);
+          if (onProgress != null)
+            onProgress(totalProgress <= 0 ? 0 : totalProgress);
         },
       );
 
@@ -83,18 +88,22 @@ class DownloadAssetsController {
           await outFile.writeAsBytes(file.content);
           totalProgress += increment;
 
-          if (progressCallback != null)
-            progressCallback(totalProgress);
+          if (onProgress != null)
+            onProgress(totalProgress);
+          print(filename);
         }
       }
 
-      if (progressCallback != null)
-        progressCallback(100);
+      if (onProgress != null && totalProgress != 100)
+        onProgress(100);
+
+      if (onComplete != null)
+        onComplete();
     } catch (e) {
       DownloadAssetsException downloadAssetsException = DownloadAssetsException(e.toString(), exception: e);
 
-      if (errorCallback != null)
-        errorCallback(downloadAssetsException);
+      if (onError != null)
+        onError(downloadAssetsException);
       else
         throw downloadAssetsException;
     }
