@@ -1,5 +1,5 @@
 # download_assets
-This package download and uncompress to local storage all assets that are not included in your app. Some files should not being included in one of my jobs, this way I just created this plugin.
+This package download and uncompress to local storage all assets that are not included in your app.
 
 # Supported platforms
 * iOS
