@@ -8,3 +8,7 @@
 * Added example file
 * Renamed progressCallback and errorCallback to onProgress and onError
 * Added onComplete callback
+
+## 1.0.3 - May 20, 2020
+
+* Little adjustments
