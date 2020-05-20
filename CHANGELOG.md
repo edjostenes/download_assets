@@ -2,7 +2,7 @@
 
 * First version.
 
-## 1.0.2 - Not launched yet!
+## 1.0.2 - May 19, 2020
 
 * Added getter to local directory (assetsDir)
 * Added example file
