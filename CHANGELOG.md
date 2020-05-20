@@ -4,4 +4,7 @@
 
 ## 1.0.2 - Not launched yet!
 
-* Added getter to local directory
+* Added getter to local directory (assetsDir)
+* Added example file
+* Renamed progressCallback and errorCallback to onProgress and onError
+* Added onComplete callback
