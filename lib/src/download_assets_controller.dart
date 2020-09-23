@@ -19,6 +19,8 @@ class DownloadAssetsController {
   /// If assets directory was already create it assumes that the content was already downloaded.
   static Future<bool> assetsDirAlreadyExists() async => await Directory(_assetsDir).exists();
 
+  static Future<bool> assetsFileExists(String path) async => await File(path).exists();
+
   /// Clear all download assets, if it already exists on local storage.
   static Future clearAssets() async {
     bool assetsDirExists = await assetsDirAlreadyExists();
