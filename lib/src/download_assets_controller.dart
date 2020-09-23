@@ -11,9 +11,9 @@ class DownloadAssetsController {
   static String _assetsDir;
   static String get assetsDir => _assetsDir;
 
-  static Future init() async {
+  static Future init({String directory = 'assets'}) async {
     String rootDir = (await getApplicationDocumentsDirectory()).path;
-    _assetsDir = '$rootDir/assets';
+    _assetsDir = '$rootDir/$directory';
   }
 
   /// If assets directory was already create it assumes that the content was already downloaded.
