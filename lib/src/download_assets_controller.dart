@@ -11,13 +11,15 @@ class DownloadAssetsController {
   static String _assetsDir;
   static String get assetsDir => _assetsDir;
 
-  static Future init() async {
+  static Future init({String directory = 'assets'}) async {
     String rootDir = (await getApplicationDocumentsDirectory()).path;
-    _assetsDir = '$rootDir/assets';
+    _assetsDir = '$rootDir/$directory';
   }
 
   /// If assets directory was already create it assumes that the content was already downloaded.
   static Future<bool> assetsDirAlreadyExists() async => await Directory(_assetsDir).exists();
+
+  static Future<bool> assetsFileExists(String file) async => await File('$_assetsDir/$file').exists();
 
   /// Clear all download assets, if it already exists on local storage.
   static Future clearAssets() async {
