@@ -12,3 +12,7 @@
 ## 1.0.3 - May 20, 2020
 
 * Little adjustments
+
+## 1.0.4 - September 25, 2020
+
+* Allow asset directory to be specified
