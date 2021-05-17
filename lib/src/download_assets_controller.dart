@@ -3,13 +3,12 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:dio/dio.dart';
 import 'package:download_assets/src/download_assets_exception.dart';
-import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DownloadAssetsController {
   
-  static String _assetsDir;
-  static String get assetsDir => _assetsDir;
+  static String? _assetsDir;
+  static String? get assetsDir => _assetsDir;
 
   static Future init({String directory = 'assets'}) async {
     String rootDir = (await getApplicationDocumentsDirectory()).path;
@@ -17,7 +16,7 @@ class DownloadAssetsController {
   }
 
   /// If assets directory was already create it assumes that the content was already downloaded.
-  static Future<bool> assetsDirAlreadyExists() async => await Directory(_assetsDir).exists();
+  static Future<bool> assetsDirAlreadyExists() async => await Directory(_assetsDir!).exists();
 
   static Future<bool> assetsFileExists(String file) async => await File('$_assetsDir/$file').exists();
 
@@ -28,7 +27,7 @@ class DownloadAssetsController {
     if (!assetsDirExists)
       return;
 
-    await Directory(_assetsDir).delete(recursive: true);
+    await Directory(_assetsDir!).delete(recursive: true);
   }
 
   /// Start download of your content to local storage, uncompress all data and delete
@@ -39,17 +38,17 @@ class DownloadAssetsController {
   /// [onError] -> It's not required. If you provider this callback it will be called when any exception to occur
   /// [onComplete] -> It's not required. Called if the progress was completed with success
   static Future startDownload({
-    @required String assetsUrl,
-    Function(double) onProgress,
-    Function(Exception) onError,
-    Function onComplete,
+    required String assetsUrl,
+    Function(double)? onProgress,
+    Function(Exception)? onError,
+    Function? onComplete,
   }) async {
     try {
       if (assetsUrl == null || assetsUrl.isEmpty)
         throw DownloadAssetsException("AssetUrl param can't be empty");
 
       await clearAssets();
-      await Directory(_assetsDir).create();
+      await Directory(_assetsDir!).create();
       String fullPath = '$_assetsDir/assets.zip';
       double totalProgress = 0;
 
@@ -102,7 +101,7 @@ class DownloadAssetsController {
       if (onComplete != null)
         onComplete();
     } catch (e) {
-      DownloadAssetsException downloadAssetsException = DownloadAssetsException(e.toString(), exception: e);
+      DownloadAssetsException downloadAssetsException = DownloadAssetsException(e.toString());
 
       if (onError != null)
         onError(downloadAssetsException);
