@@ -1,4 +1,4 @@
-## 2.0 - June 10, 2021
+## 2.0.0 - June 10, 2021
 
 * Project migrated to null-safety
 
