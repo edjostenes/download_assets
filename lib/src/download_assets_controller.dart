@@ -10,6 +10,7 @@ class DownloadAssetsController {
   static String? _assetsDir;
   static String? get assetsDir => _assetsDir;
 
+  /// [directory] -> Specify the local directory for your files. If it wasn't set a folder named 'assets' will be used.
   static Future init({String directory = 'assets'}) async {
     String rootDir = (await getApplicationDocumentsDirectory()).path;
     _assetsDir = '$rootDir/$directory';
