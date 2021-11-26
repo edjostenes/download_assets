@@ -112,13 +112,3 @@ app.*.symbols
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 !/dev/ci/**/Gemfile.lock
-
-# Custom
-.idea/.gitignore
-.idea/codeStyles/Project.xml
-.idea/codeStyles/codeStyleConfig.xml
-.idea/download_assets.iml
-.idea/libraries/Dart_SDK.xml
-.idea/modules.xml
-.idea/vcs.xml
-downloadassets.iml
