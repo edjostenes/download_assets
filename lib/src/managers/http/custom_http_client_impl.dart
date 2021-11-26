@@ -7,7 +7,7 @@ class CustomHttpClientImpl implements CustomHttpClient {
   @override
   Future<Response> download(
     String urlPath,
-    savePath, {
+    String savePath, {
     ProgressCallback? onReceiveProgress,
   }) async {
     return await Dio().download(
