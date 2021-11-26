@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   final String title;
 
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({@required this.title});
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -32,14 +32,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  DownloadAssetsController downloadAssetsController = DownloadAssetsController();
   String message = "Press the download button to start the download";
   bool downloaded = false;
-
-  @override
-  void initState() {
-    super.initState();
-    DownloadAssetsController.init();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: 150,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: FileImage(File("${DownloadAssetsController.assetsDir}/dart.jpeg")),
+                    image: FileImage(File("${downloadAssetsController.assetsDir}/dart.jpeg")),
                     fit: BoxFit.fitWidth,
                   ),
                 ),
@@ -69,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: 150,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: FileImage(File("${DownloadAssetsController.assetsDir}/flutter.png")),
+                    image: FileImage(File("${downloadAssetsController.assetsDir}/flutter.png")),
                     fit: BoxFit.fitWidth,
                   ),
                 ),
@@ -97,12 +92,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future _refresh() async {
-    await DownloadAssetsController.clearAssets();
+    await downloadAssetsController.clearAssets();
     await _downloadAssets();
   }
 
   Future _downloadAssets() async {
-    bool assetsDownloaded = await DownloadAssetsController.assetsDirAlreadyExists();
+    bool assetsDownloaded = await downloadAssetsController.assetsDirAlreadyExists();
 
     if (assetsDownloaded) {
       setState(() {
@@ -113,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     try {
-      await DownloadAssetsController.startDownload(
+      await downloadAssetsController.startDownload(
           assetsUrl: "https://github.com/edjostenes/download_assets/raw/master/assets.zip",
           onProgress: (progressValue) {
             downloaded = false;
