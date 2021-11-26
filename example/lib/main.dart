@@ -119,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           onComplete: () {
             setState(() {
-              message = "Download compeleted\nClick in refresh button to force download";
+              message = "Download completed\nClick in refresh button to force download";
               downloaded = true;
             });
           },
