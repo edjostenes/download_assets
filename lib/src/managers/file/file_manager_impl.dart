@@ -25,6 +25,7 @@ class FileManagerImpl implements FileManager {
     return await file.delete();
   }
 
+  @override
   Future<FileSystemEntity> deleteDirectory(String directoryPath, {bool recursive = false}) async {
     return await Directory(directoryPath).delete(recursive: true);
   }
