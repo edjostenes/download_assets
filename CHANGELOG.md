@@ -1,3 +1,9 @@
+## 2.1.0 - November 26, 2021
+
+* BREAKING REFACTOR: It was refactored all architecture
+* No more static methods/getters
+* Updated all dependencies
+
 ## 2.0.0 - June 10, 2021
 
 * Project migrated to null-safety

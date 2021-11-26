@@ -1,14 +1,24 @@
+import 'package:download_assets/src/managers/file/file_manager_impl.dart';
+import 'package:download_assets/src/managers/http/custom_http_client_impl.dart';
+
 import 'download_assets_controller_impl.dart';
 
 abstract class DownloadAssetsController {
-  /// [directory] -> Specify the local directory for your files. If it wasn't set a folder named 'assets' will be used.
-  factory DownloadAssetsController({String directory = 'assets'}) => createObject(directory: directory);
+  /// [directory] -> Specify the local directory for your files. If it wasn't set a folder named 'assets' will be used. Default values is "assets"
+  factory DownloadAssetsController({String directory = 'assets'}) => createObject(
+        directoryPath: directory,
+        fileManager: FileManagerImpl(),
+        customHttpClient: CustomHttpClientImpl(),
+      );
 
-  String? get assetsDir;
+  ///Directory that keeps all assets
+  String get assetsDir;
 
-  /// If assets directory was already create it assumes that the content was already downloaded.
+  /// If assets directory was already created it assumes that the content was already downloaded.
   Future<bool> assetsDirAlreadyExists();
 
+  /// It checks if file already exists
+  /// [file] -> full path to file
   Future<bool> assetsFileExists(String file);
 
   /// Clear all download assets, if it already exists on local storage.
