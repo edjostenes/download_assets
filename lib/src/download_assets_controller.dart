@@ -4,15 +4,17 @@ import 'package:download_assets/src/managers/http/custom_http_client_impl.dart';
 import 'download_assets_controller_impl.dart';
 
 abstract class DownloadAssetsController {
-  /// [directory] -> Specify the local directory for your files. If it wasn't set a folder named 'assets' will be used. Default values is "assets"
   factory DownloadAssetsController({String directory = 'assets'}) => createObject(
-        directoryPath: directory,
         fileManager: FileManagerImpl(),
         customHttpClient: CustomHttpClientImpl(),
       );
 
   ///Directory that keeps all assets
-  String get assetsDir;
+  String? get assetsDir;
+
+  // /// Just set the assets directory based on getApplicationPath
+  // /// [directoryPath] -> Specify the local directory for your files. If it wasn't set a folder named 'assets' will be used.
+  // Future setAssetsDirectory({String directoryPath = 'assets'});
 
   /// If assets directory was already created it assumes that the content was already downloaded.
   Future<bool> assetsDirAlreadyExists();
@@ -33,8 +35,9 @@ abstract class DownloadAssetsController {
   /// [onComplete] -> It's not required. Called if the progress was completed with success
   Future startDownload({
     required String assetsUrl,
-    Function(double)? onProgress,
-    Function(Exception)? onError,
-    Function? onComplete,
+    String directoryPath,
+    String zippedFile,
+    required Function(double) onProgress,
+    required Function onComplete,
   });
 }

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:download_assets/src/managers/file/file_manager.dart';
@@ -43,5 +44,19 @@ class FileManagerImpl implements FileManager {
   @override
   Future<String> getApplicationPath() async {
     return (await getApplicationDocumentsDirectory()).path;
+  }
+
+  @override
+  Uint8List readAsBytesSync(File file) {
+    return file.readAsBytesSync();
+  }
+
+  Future<File> createFileRecursively(File file) async {
+    return await file.create(recursive: true);
+  }
+
+  @override
+  Future<File> writeAsBytes(File file, List<int> bytes) async {
+    return await file.writeAsBytes(bytes);
   }
 }

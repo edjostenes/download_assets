@@ -4,74 +4,82 @@ import 'package:download_assets/src/managers/file/file_manager.dart';
 import 'package:download_assets/src/managers/http/custom_http_client.dart';
 
 DownloadAssetsController createObject({
-  required String directoryPath,
   required FileManager fileManager,
   required CustomHttpClient customHttpClient,
 }) =>
     DownloadAssetsControllerImpl(
-      directoryPath: directoryPath,
       fileManager: fileManager,
       customHttpClient: customHttpClient,
     );
 
 class DownloadAssetsControllerImpl implements DownloadAssetsController {
-  late String _assetsDir;
-  late FileManager _fileManager;
-  late CustomHttpClient _customHttpClient;
+  String? _assetsDir;
+
+  late FileManager fileManager;
+  late CustomHttpClient customHttpClient;
 
   @override
-  String get assetsDir => _assetsDir;
+  String? get assetsDir => _assetsDir;
 
   DownloadAssetsControllerImpl({
-    required String directoryPath,
-    required FileManager fileManager,
-    required CustomHttpClient customHttpClient,
-  }) {
-    _fileManager = fileManager;
-    _customHttpClient = customHttpClient;
-    _init(directoryPath);
-  }
+    required this.fileManager,
+    required this.customHttpClient,
+  });
 
-  void _init(String directoryPath) async {
-    String rootDir = await _fileManager.getApplicationPath();
+  Future _setAssetsDirectory(String directoryPath) async {
+    String rootDir = await fileManager.getApplicationPath();
     _assetsDir = '$rootDir/$directoryPath';
   }
 
   @override
-  Future<bool> assetsDirAlreadyExists() async => await _fileManager.directoryExists(_assetsDir);
+  Future<bool> assetsDirAlreadyExists() async {
+    if (_assetsDir == null) {
+      return false;
+    }
+
+    return await fileManager.directoryExists(_assetsDir!);
+  }
 
   @override
-  Future<bool> assetsFileExists(String file) async => await _fileManager.fileExists('$_assetsDir/$file');
+  Future<bool> assetsFileExists(String file) async {
+    if (_assetsDir == null) {
+      return false;
+    }
+
+    return await fileManager.fileExists('$_assetsDir/$file');
+  }
 
   @override
   Future clearAssets() async {
     bool assetsDirExists = await assetsDirAlreadyExists();
 
-    if (!assetsDirExists) return;
+    if (!assetsDirExists) {
+      return;
+    }
 
-    await _fileManager.deleteDirectory(_assetsDir);
+    await fileManager.deleteDirectory(_assetsDir!);
   }
 
   @override
   Future startDownload({
     required String assetsUrl,
-    Function(double)? onProgress,
-    Function(Exception)? onError,
-    Function? onComplete,
+    String directoryPath = 'assets',
+    String zippedFile = 'assets.zip',
+    required Function(double) onProgress,
+    required Function onComplete,
   }) async {
     try {
       if (assetsUrl.isEmpty) {
         throw DownloadAssetsException("AssetUrl param can't be empty");
       }
 
-      await clearAssets();
-      await _fileManager.createDirectory(_assetsDir);
-      String fullPath = '$_assetsDir/assets.zip';
+      await _setAssetsDirectory(directoryPath);
+      await fileManager.createDirectory(_assetsDir!);
+      String fullPath = '$_assetsDir/$zippedFile';
       double totalProgress = 0;
+      onProgress(totalProgress);
 
-      if (onProgress != null) onProgress(0);
-
-      await _customHttpClient.download(
+      await customHttpClient.download(
         assetsUrl,
         fullPath,
         onReceiveProgress: (received, total) {
@@ -80,14 +88,14 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
             totalProgress = progress - (progress * 0.2);
           }
 
-          if (onProgress != null) onProgress(totalProgress <= 0 ? 0 : totalProgress);
+          onProgress(totalProgress <= 0 ? 0 : totalProgress);
         },
       );
 
-      var zipFile = _fileManager.createFile(fullPath);
-      var bytes = zipFile.readAsBytesSync();
-      var archive = _fileManager.decodeBytes(bytes);
-      await _fileManager.deleteFile(zipFile);
+      var zipFile = fileManager.createFile(fullPath);
+      var bytes = fileManager.readAsBytesSync(zipFile);
+      var archive = fileManager.decodeBytes(bytes);
+      await fileManager.deleteFile(zipFile);
       double totalFiles = archive.length > 0 ? archive.length.toDouble() : 20;
       double increment = 20 / totalFiles;
 
@@ -95,25 +103,24 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
         var filename = '$_assetsDir/${file.name}';
 
         if (file.isFile) {
-          var outFile = _fileManager.createFile(filename);
-          outFile = await outFile.create(recursive: true);
-          await outFile.writeAsBytes(file.content);
+          var outFile = fileManager.createFile(filename);
+          outFile = await fileManager.createFileRecursively(outFile);
+          await fileManager.writeAsBytes(outFile, file.content);
           totalProgress += increment;
-
-          if (onProgress != null) onProgress(totalProgress);
+          onProgress(totalProgress);
         }
       }
 
-      if (onProgress != null && totalProgress != 100) onProgress(100);
+      if (totalProgress != 100) {
+        onProgress(100);
+      }
 
-      if (onComplete != null) onComplete();
-    } catch (e) {
-      DownloadAssetsException downloadAssetsException = DownloadAssetsException(e.toString());
-
-      if (onError != null)
-        onError(downloadAssetsException);
-      else
-        throw downloadAssetsException;
+      onComplete();
+    } on Exception catch (e) {
+      throw DownloadAssetsException(
+        e.toString(),
+        exception: e,
+      );
     }
   }
 }

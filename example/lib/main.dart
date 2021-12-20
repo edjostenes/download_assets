@@ -31,7 +31,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   DownloadAssetsController downloadAssetsController = DownloadAssetsController();
   String message = "Press the download button to start the download";
   bool downloaded = false;
@@ -80,7 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
             tooltip: 'Increment',
             child: Icon(Icons.arrow_downward),
           ),
-          SizedBox(width: 25,),
+          SizedBox(
+            width: 25,
+          ),
           FloatingActionButton(
             onPressed: _refresh,
             tooltip: 'Refresh',
@@ -109,29 +110,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
     try {
       await downloadAssetsController.startDownload(
-          assetsUrl: "https://github.com/edjostenes/download_assets/raw/master/assets.zip",
-          onProgress: (progressValue) {
-            downloaded = false;
-            setState(() {
-              message = "Downloading - ${progressValue.toStringAsFixed(2)}";
-              print(message);
-            });
-          },
-          onComplete: () {
-            setState(() {
-              message = "Download completed\nClick in refresh button to force download";
-              downloaded = true;
-            });
-          },
-          onError: (exception) {
-            setState(() {
-              downloaded = false;
-              message = "Error: ${exception.toString()}";
-            });
-          }
+        assetsUrl: "https://github.com/edjostenes/download_assets/raw/master/assets.zip",
+        onProgress: (progressValue) {
+          downloaded = false;
+          setState(() {
+            message = "Downloading - ${progressValue.toStringAsFixed(2)}";
+            print(message);
+          });
+        },
+        onComplete: () {
+          setState(() {
+            message = "Download completed\nClick in refresh button to force download";
+            downloaded = true;
+          });
+        },
       );
     } on DownloadAssetsException catch (e) {
       print(e.toString());
+      setState(() {
+        downloaded = false;
+        message = "Error: ${e.toString()}";
+      });
     }
   }
 }

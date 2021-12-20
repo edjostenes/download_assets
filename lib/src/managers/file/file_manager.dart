@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:archive/archive.dart';
 
 abstract class FileManager {
@@ -17,4 +18,10 @@ abstract class FileManager {
   Archive decodeBytes(List<int> data, {bool verify = false, String? password});
 
   Future<String> getApplicationPath();
+
+  Uint8List readAsBytesSync(File file);
+
+  Future<File> createFileRecursively(File file);
+
+  Future<File> writeAsBytes(File file, List<int> bytes);
 }
