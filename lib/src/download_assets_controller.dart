@@ -12,10 +12,6 @@ abstract class DownloadAssetsController {
   ///Directory that keeps all assets
   String? get assetsDir;
 
-  // /// Just set the assets directory based on getApplicationPath
-  // /// [directoryPath] -> Specify the local directory for your files. If it wasn't set a folder named 'assets' will be used.
-  // Future setAssetsDirectory({String directoryPath = 'assets'});
-
   /// If assets directory was already created it assumes that the content was already downloaded.
   Future<bool> assetsDirAlreadyExists();
 
@@ -29,15 +25,17 @@ abstract class DownloadAssetsController {
   /// Start download of your content to local storage, uncompress all data and delete
   /// the compressed file.
   /// [assetsUrl] -> Specify the url for your compressed file. (http://{YOUR_DOMAIN}:{FILE_NAME}.zip
-  /// [onProgress] -> It's not required. If you provide this callback it will be called after each iteration
-  /// returning the actual progress
-  /// [onError] -> It's not required. If you provider this callback it will be called when any exception to occur
-  /// [onComplete] -> It's not required. Called if the progress was completed with success
+  /// [onProgress] -> It's required. Called after each iteration returning the current progress
+  /// [onComplete] -> It's required. Called when the progress is completed with success
+  /// [directoryPath] -> Path to directory where your zipFile will be downloaded and unzipped (default value is getApplicationPath + assets)
+  /// [zippedFile] -> Zipped file's name (default value is assets.zip)
+  /// [useFullDirectoryPath] -> If this is true the getApplicationPath won't be used (make sure that the app has to write permission and it is a valid path)
   Future startDownload({
     required String assetsUrl,
-    String directoryPath,
-    String zippedFile,
     required Function(double) onProgress,
     required Function onComplete,
+    String directoryPath,
+    String zippedFile,
+    bool useFullDirectoryPath,
   });
 }

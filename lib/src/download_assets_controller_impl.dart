@@ -26,9 +26,13 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     required this.customHttpClient,
   });
 
-  Future _setAssetsDirectory(String directoryPath) async {
-    String rootDir = await fileManager.getApplicationPath();
-    _assetsDir = '$rootDir/$directoryPath';
+  Future _setAssetsDirectory(String directoryPath, bool useFullDirectoryPath) async {
+    if (useFullDirectoryPath) {
+      _assetsDir = directoryPath;
+    } else {
+      String rootDir = await fileManager.getApplicationPath();
+      _assetsDir = '$rootDir/$directoryPath';
+    }
   }
 
   @override
@@ -63,17 +67,18 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   @override
   Future startDownload({
     required String assetsUrl,
-    String directoryPath = 'assets',
-    String zippedFile = 'assets.zip',
     required Function(double) onProgress,
     required Function onComplete,
+    String directoryPath = 'assets',
+    String zippedFile = 'assets.zip',
+    bool useFullDirectoryPath = false,
   }) async {
     try {
       if (assetsUrl.isEmpty) {
         throw DownloadAssetsException("AssetUrl param can't be empty");
       }
 
-      await _setAssetsDirectory(directoryPath);
+      await _setAssetsDirectory(directoryPath, useFullDirectoryPath);
       await fileManager.createDirectory(_assetsDir!);
       String fullPath = '$_assetsDir/$zippedFile';
       double totalProgress = 0;
