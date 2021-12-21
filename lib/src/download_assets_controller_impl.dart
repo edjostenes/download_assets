@@ -26,12 +26,16 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     required this.customHttpClient,
   });
 
-  Future _setAssetsDirectory(String directoryPath, bool useFullDirectoryPath) async {
+  @override
+  Future init({
+    String assetDir = 'assets',
+    bool useFullDirectoryPath = false,
+  }) async {
     if (useFullDirectoryPath) {
-      _assetsDir = directoryPath;
+      _assetsDir = assetDir;
     } else {
       String rootDir = await fileManager.getApplicationPath();
-      _assetsDir = '$rootDir/$directoryPath';
+      _assetsDir = '$rootDir/$assetDir';
     }
   }
 
@@ -67,22 +71,22 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   @override
   Future startDownload({
     required String assetsUrl,
-    required Function(double) onProgress,
-    required Function onComplete,
-    String directoryPath = 'assets',
+    Function(double)? onProgress,
     String zippedFile = 'assets.zip',
-    bool useFullDirectoryPath = false,
   }) async {
     try {
       if (assetsUrl.isEmpty) {
         throw DownloadAssetsException("AssetUrl param can't be empty");
       }
 
-      await _setAssetsDirectory(directoryPath, useFullDirectoryPath);
+      if (_assetsDir == null) {
+        throw DownloadAssetsException("Call init method first");
+      }
+
       await fileManager.createDirectory(_assetsDir!);
       String fullPath = '$_assetsDir/$zippedFile';
       double totalProgress = 0;
-      onProgress(totalProgress);
+      onProgress?.call(totalProgress);
 
       await customHttpClient.download(
         assetsUrl,
@@ -93,7 +97,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
             totalProgress = progress - (progress * 0.2);
           }
 
-          onProgress(totalProgress <= 0 ? 0 : totalProgress);
+          onProgress?.call(totalProgress <= 0 ? 0 : totalProgress);
         },
       );
 
@@ -112,15 +116,13 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
           outFile = await fileManager.createFileRecursively(outFile);
           await fileManager.writeAsBytes(outFile, file.content);
           totalProgress += increment;
-          onProgress(totalProgress);
+          onProgress?.call(totalProgress);
         }
       }
 
       if (totalProgress != 100) {
-        onProgress(100);
+        onProgress?.call(100);
       }
-
-      onComplete();
     } on Exception catch (e) {
       throw DownloadAssetsException(
         e.toString(),

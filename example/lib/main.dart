@@ -36,6 +36,17 @@ class _MyHomePageState extends State<MyHomePage> {
   bool downloaded = false;
 
   @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  Future _init() async {
+    await downloadAssetsController.init();
+    downloaded = await downloadAssetsController.assetsDirAlreadyExists();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -114,14 +125,14 @@ class _MyHomePageState extends State<MyHomePage> {
         onProgress: (progressValue) {
           downloaded = false;
           setState(() {
-            message = "Downloading - ${progressValue.toStringAsFixed(2)}";
-            print(message);
-          });
-        },
-        onComplete: () {
-          setState(() {
-            message = "Download completed\nClick in refresh button to force download";
-            downloaded = true;
+            if (progressValue < 100) {
+              message = "Downloading - ${progressValue.toStringAsFixed(2)}";
+              print(message);
+            } else {
+              message = "Download completed\nClick in refresh button to force download";
+              print(message);
+              downloaded = true;
+            }
           });
         },
       );
