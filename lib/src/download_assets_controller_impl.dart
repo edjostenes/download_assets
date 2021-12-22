@@ -74,15 +74,10 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     Function(double)? onProgress,
     String zippedFile = 'assets.zip',
   }) async {
+    assert(assetsDir != null, "DownloadAssets has not been initialized. Call init method first");
+    assert(assetsUrl.isNotEmpty, "AssetUrl param can't be empty");
+
     try {
-      if (assetsUrl.isEmpty) {
-        throw DownloadAssetsException("AssetUrl param can't be empty");
-      }
-
-      if (_assetsDir == null) {
-        throw DownloadAssetsException("DownloadAssets has not been initialized. Call init method first");
-      }
-
       await fileManager.createDirectory(_assetsDir!);
       String fullPath = '$_assetsDir/$zippedFile';
       double totalProgress = 0;
