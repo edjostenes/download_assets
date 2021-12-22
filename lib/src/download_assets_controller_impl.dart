@@ -41,19 +41,13 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
 
   @override
   Future<bool> assetsDirAlreadyExists() async {
-    if (_assetsDir == null) {
-      return false;
-    }
-
+    assert(assetsDir != null, "DownloadAssets has not been initialized. Call init method first");
     return await fileManager.directoryExists(_assetsDir!);
   }
 
   @override
   Future<bool> assetsFileExists(String file) async {
-    if (_assetsDir == null) {
-      return false;
-    }
-
+    assert(assetsDir != null, "DownloadAssets has not been initialized. Call init method first");
     return await fileManager.fileExists('$_assetsDir/$file');
   }
 
