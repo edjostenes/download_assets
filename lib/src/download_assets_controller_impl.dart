@@ -80,7 +80,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
       }
 
       if (_assetsDir == null) {
-        throw DownloadAssetsException("Call init method first");
+        throw DownloadAssetsException("DownloadAssets has not been initialized. Call init method first");
       }
 
       await fileManager.createDirectory(_assetsDir!);
