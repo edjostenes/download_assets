@@ -22,6 +22,9 @@
 .settings/
 .vscode/
 .idea/
+!.idea/libraries/Dart_SDK.xml
+!.idea/modules.xml
+!.idea/vcs.xml
 
 # Flutter repo-specific
 /bin/cache/
