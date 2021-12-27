@@ -21,7 +21,15 @@
 .project
 .settings/
 .vscode/
-.idea/*
+.idea/*.
+.idea/git_toolbox_prj.xml
+.idea/misc.xml
+.idea/shelf/
+.idea/workspace.xml
+.idea/libraries/Dart_Packages.xml
+.idea/libraries/Flutter_Plugins.xml
+.idea/shelf/Dart_Changelist.xml
+
 !.idea/libraries/Dart_SDK.xml
 !.idea/modules.xml
 !.idea/vcs.xml
