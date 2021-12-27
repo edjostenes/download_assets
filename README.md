@@ -1,6 +1,6 @@
 # About download_assets
 
-This package downloads a zipped file and uncompresses to local storage all assets that are not included in your app. Some files, like images, sometimes, must not be included in your build.
+This package downloads a zipped file and unzips to local storage all assets that are not included in your app. Some files, like images, sometimes, must not be included in your build.
 
 # Supported platforms
 

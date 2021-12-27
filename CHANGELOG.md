@@ -1,3 +1,9 @@
+## 3.0.0 - December 27, 2021
+
+* BREAKING REFACTOR: It's no more required the onProgress callback and was removed the onComplete callback;
+* All async code from the constructor was removed;
+* Removed setAssetDir method and added init method. (check de documentation or example to see how to use it)
+
 ## 2.1.0 - November 26, 2021
 
 * BREAKING REFACTOR: It was refactored all architecture
