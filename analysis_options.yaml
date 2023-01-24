@@ -1,0 +1,50 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  strong-mode:
+    implicit-casts
+    implicit-dynamic
+
+  errors:
+    missing_required_param: warning
+    missing_return: warning
+    todo: ignore
+    deprecated_member_use_from_same_package: warning
+    unused_import: warning
+    unnecessary_import: warning
+    avoid_classes_with_only_static_members: warning
+    unused_element: warning
+    unnecessary_null_comparison: warning
+    invalid_annotation: ignore
+
+linter:
+  rules:
+    - lines_longer_than_80_chars: false
+    - always_declare_return_types
+    - avoid_bool_literals_in_conditional_expressions
+    - avoid_classes_with_only_static_members
+    - avoid_field_initializers_in_const_classes
+    - avoid_positional_boolean_parameters
+    - avoid_private_typedef_functions
+    - avoid_returning_this
+    - avoid_setters_without_getters
+    - avoid_void_async
+    - cancel_subscriptions
+    - close_sinks
+    - join_return_with_assignment
+    - literal_only_boolean_expressions
+    - no_adjacent_strings_in_list
+    - omit_local_variable_types
+    - package_api_docs
+    - prefer_asserts_in_initializer_lists
+    - prefer_final_in_for_each
+    - prefer_final_locals
+    - prefer_relative_imports
+    - prefer_single_quotes
+    - prefer_expression_function_bodies
+    - sort_constructors_first
+    - sort_unnamed_constructors_first
+    - test_types_in_equals
+    - throw_in_finally
+    - type_annotate_public_apis
+    - use_to_and_as_if_applicable

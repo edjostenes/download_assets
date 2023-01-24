@@ -1,3 +1,5 @@
+[![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
+
 # About download_assets
 
 This package downloads a zipped file and unzips to local storage all assets that are not included in your app. Some files, like images, sometimes, must not be included in your build.

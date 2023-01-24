@@ -14,7 +14,7 @@ class CustomHttpClientImpl implements CustomHttpClient {
       urlPath,
       savePath,
       options: Options(
-        headers: {HttpHeaders.acceptEncodingHeader: "*"},
+        headers: {HttpHeaders.acceptEncodingHeader: '*'},
         responseType: ResponseType.bytes,
       ),
       onReceiveProgress: onReceiveProgress,

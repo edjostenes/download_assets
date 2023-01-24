@@ -1,7 +1,7 @@
-import 'package:download_assets/src/download_assets_controller.dart';
-import 'package:download_assets/src/exceptions/download_assets_exception.dart';
-import 'package:download_assets/src/managers/file/file_manager.dart';
-import 'package:download_assets/src/managers/http/custom_http_client.dart';
+import 'download_assets_controller.dart';
+import 'exceptions/download_assets_exception.dart';
+import 'managers/file/file_manager.dart';
+import 'managers/http/custom_http_client.dart';
 
 DownloadAssetsController createObject({
   required FileManager fileManager,
@@ -13,18 +13,17 @@ DownloadAssetsController createObject({
     );
 
 class DownloadAssetsControllerImpl implements DownloadAssetsController {
-  String? _assetsDir;
+  DownloadAssetsControllerImpl({
+    required this.fileManager,
+    required this.customHttpClient,
+  });
 
+  String? _assetsDir;
   late FileManager fileManager;
   late CustomHttpClient customHttpClient;
 
   @override
   String? get assetsDir => _assetsDir;
-
-  DownloadAssetsControllerImpl({
-    required this.fileManager,
-    required this.customHttpClient,
-  });
 
   @override
   Future init({
@@ -33,27 +32,28 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   }) async {
     if (useFullDirectoryPath) {
       _assetsDir = assetDir;
-    } else {
-      String rootDir = await fileManager.getApplicationPath();
-      _assetsDir = '$rootDir/$assetDir';
+      return;
     }
+
+    final rootDir = await fileManager.getApplicationPath();
+    _assetsDir = '$rootDir/$assetDir';
   }
 
   @override
   Future<bool> assetsDirAlreadyExists() async {
-    assert(assetsDir != null, "DownloadAssets has not been initialized. Call init method first");
+    assert(assetsDir != null, 'DownloadAssets has not been initialized. Call init method first');
     return await fileManager.directoryExists(_assetsDir!);
   }
 
   @override
   Future<bool> assetsFileExists(String file) async {
-    assert(assetsDir != null, "DownloadAssets has not been initialized. Call init method first");
+    assert(assetsDir != null, 'DownloadAssets has not been initialized. Call init method first');
     return await fileManager.fileExists('$_assetsDir/$file');
   }
 
   @override
   Future clearAssets() async {
-    bool assetsDirExists = await assetsDirAlreadyExists();
+    final assetsDirExists = await assetsDirAlreadyExists();
 
     if (!assetsDirExists) {
       return;
@@ -68,13 +68,13 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     Function(double)? onProgress,
     String zippedFile = 'assets.zip',
   }) async {
-    assert(assetsDir != null, "DownloadAssets has not been initialized. Call init method first");
+    assert(assetsDir != null, 'DownloadAssets has not been initialized. Call init method first');
     assert(assetsUrl.isNotEmpty, "AssetUrl param can't be empty");
 
     try {
       await fileManager.createDirectory(_assetsDir!);
-      String fullPath = '$_assetsDir/$zippedFile';
-      double totalProgress = 0;
+      final fullPath = '$_assetsDir/$zippedFile';
+      var totalProgress = 0.0;
       onProgress?.call(totalProgress);
 
       await customHttpClient.download(
@@ -82,7 +82,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
         fullPath,
         onReceiveProgress: (received, total) {
           if (total != -1) {
-            double progress = (received / total * 100);
+            final progress = (received / total * 100);
             totalProgress = progress - (progress * 0.2);
           }
 
@@ -90,23 +90,25 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
         },
       );
 
-      var zipFile = fileManager.createFile(fullPath);
-      var bytes = fileManager.readAsBytesSync(zipFile);
-      var archive = fileManager.decodeBytes(bytes);
+      final zipFile = fileManager.createFile(fullPath);
+      final bytes = fileManager.readAsBytesSync(zipFile);
+      final archive = fileManager.decodeBytes(bytes);
       await fileManager.deleteFile(zipFile);
-      double totalFiles = archive.length > 0 ? archive.length.toDouble() : 20;
-      double increment = 20 / totalFiles;
+      final totalFiles = archive.isNotEmpty ? archive.length.toDouble() : 20;
+      final increment = 20 / totalFiles;
 
-      for (var file in archive) {
-        var filename = '$_assetsDir/${file.name}';
+      for (final file in archive) {
+        final filename = '$_assetsDir/${file.name}';
 
-        if (file.isFile) {
-          var outFile = fileManager.createFile(filename);
-          outFile = await fileManager.createFileRecursively(outFile);
-          await fileManager.writeAsBytes(outFile, file.content);
-          totalProgress += increment;
-          onProgress?.call(totalProgress);
+        if (!file.isFile) {
+          continue;
         }
+
+        var outFile = fileManager.createFile(filename);
+        outFile = await fileManager.createFileRecursively(outFile);
+        await fileManager.writeAsBytes(outFile, file.content);
+        totalProgress += increment;
+        onProgress?.call(totalProgress);
       }
 
       if (totalProgress != 100) {
