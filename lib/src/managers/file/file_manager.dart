@@ -9,9 +9,11 @@ abstract class FileManager {
 
   Future<FileSystemEntity> deleteFile(File file, {bool recursive = false});
 
-  Future<FileSystemEntity> deleteDirectory(String directoryPath, {bool recursive = false});
+  Future<FileSystemEntity> deleteDirectory(String directoryPath,
+      {bool recursive = false});
 
-  Future<Directory> createDirectory(String directoryPath, {bool recursive = false});
+  Future<Directory> createDirectory(String directoryPath,
+      {bool recursive = false});
 
   File createFile(String fullPath);
 

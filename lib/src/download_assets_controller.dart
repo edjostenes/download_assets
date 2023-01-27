@@ -3,7 +3,8 @@ import 'managers/file/file_manager_impl.dart';
 import 'managers/http/custom_http_client_impl.dart';
 
 abstract class DownloadAssetsController {
-  factory DownloadAssetsController({String directory = 'assets'}) => createObject(
+  factory DownloadAssetsController({String directory = 'assets'}) =>
+      createObject(
         fileManager: FileManagerImpl(),
         customHttpClient: CustomHttpClientImpl(),
       );
