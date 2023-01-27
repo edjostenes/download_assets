@@ -1,6 +1,6 @@
 name: download_assets
 description: Download and uncompress assets
-version: 3.0.1
+version: 3.0.3
 homepage: https://github.com/edjostenes/download_assets
 
 environment:

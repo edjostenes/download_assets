@@ -1,4 +1,4 @@
-## 3.0.1 - January 24, 2023
+## 3.0.3 - January 27, 2023
 
 * Lint applied to project
 * All dependencies updated
