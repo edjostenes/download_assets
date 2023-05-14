@@ -29,7 +29,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  DownloadAssetsController downloadAssetsController = DownloadAssetsController();
+  DownloadAssetsController downloadAssetsController =
+      DownloadAssetsController();
   String message = 'Press the download button to start the download';
   bool downloaded = false;
 
@@ -54,28 +55,30 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(message),
-              if (downloaded)
+              if (downloaded) ...[
                 Container(
                   width: 150,
                   height: 150,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: FileImage(File('${downloadAssetsController.assetsDir}/dart.jpeg')),
+                      image: FileImage(File(
+                          '${downloadAssetsController.assetsDir}/dart.jpeg')),
                       fit: BoxFit.fitWidth,
                     ),
                   ),
                 ),
-              if (downloaded)
                 Container(
                   width: 150,
                   height: 150,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: FileImage(File('${downloadAssetsController.assetsDir}/flutter.png')),
+                      image: FileImage(File(
+                          '${downloadAssetsController.assetsDir}/flutter.png')),
                       fit: BoxFit.fitWidth,
                     ),
                   ),
                 )
+              ]
             ],
           ),
         ),
@@ -84,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             FloatingActionButton(
               onPressed: _downloadAssets,
-              tooltip: 'Increment',
+              tooltip: 'Download',
               child: Icon(Icons.arrow_downward),
             ),
             const SizedBox(
@@ -94,6 +97,14 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: _refresh,
               tooltip: 'Refresh',
               child: Icon(Icons.refresh),
+            ),
+            const SizedBox(
+              width: 25,
+            ),
+            FloatingActionButton(
+              onPressed: _cancel,
+              tooltip: 'Cancel',
+              child: Icon(Icons.cancel_outlined),
             ),
           ],
         ), // This trailing comma makes auto-formatting nicer for build methods.
@@ -105,7 +116,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future _downloadAssets() async {
-    final assetsDownloaded = await downloadAssetsController.assetsDirAlreadyExists();
+    final assetsDownloaded =
+        await downloadAssetsController.assetsDirAlreadyExists();
 
     if (assetsDownloaded) {
       setState(() {
@@ -117,7 +129,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
     try {
       await downloadAssetsController.startDownload(
-        assetsUrl: 'https://github.com/edjostenes/download_assets/raw/master/assets.zip',
+        onCancel: () {
+          message = 'Cancelled by user';
+          setState(() {});
+        },
+        assetsUrl:
+            'https://github.com/edjostenes/download_assets/raw/master/assets.zip',
         onProgress: (progressValue) {
           downloaded = false;
           setState(() {
@@ -125,7 +142,8 @@ class _MyHomePageState extends State<MyHomePage> {
               message = 'Downloading - ${progressValue.toStringAsFixed(2)}';
               print(message);
             } else {
-              message = 'Download completed\nClick in refresh button to force download';
+              message =
+                  'Download completed\nClick in refresh button to force download';
               print(message);
               downloaded = true;
             }
@@ -140,4 +158,6 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     }
   }
+
+  void _cancel() => downloadAssetsController.cancelDownload();
 }

@@ -68,7 +68,10 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   Future startDownload({
     required String assetsUrl,
     Function(double)? onProgress,
+    Function()? onCancel,
     String zippedFile = 'assets.zip',
+    Map<String, dynamic>? requestQueryParams,
+    Map<String, String> requestExtraHeaders = const {},
   }) async {
     assert(assetsDir != null,
         'DownloadAssets has not been initialized. Call init method first');
@@ -79,7 +82,6 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
       final fullPath = '$_assetsDir/$zippedFile';
       var totalProgress = 0.0;
       onProgress?.call(totalProgress);
-
       await customHttpClient.download(
         assetsUrl,
         fullPath,
@@ -91,8 +93,9 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
 
           onProgress?.call(totalProgress <= 0 ? 0 : totalProgress);
         },
+        requestExtraHeaders: requestExtraHeaders,
+        requestQueryParams: requestQueryParams,
       );
-
       final zipFile = fileManager.createFile(fullPath);
       final bytes = fileManager.readAsBytesSync(zipFile);
       final archive = fileManager.decodeBytes(bytes);
@@ -117,11 +120,18 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
       if (totalProgress != 100) {
         onProgress?.call(100);
       }
+    } on DownloadAssetsException catch (e) {
+      if (e.downloadCancelled) {
+        onCancel?.call();
+        return;
+      }
+
+      rethrow;
     } on Exception catch (e) {
-      throw DownloadAssetsException(
-        e.toString(),
-        exception: e,
-      );
+      throw DownloadAssetsException(e.toString(), exception: e);
     }
   }
+
+  @override
+  void cancelDownload() => customHttpClient.cancel();
 }

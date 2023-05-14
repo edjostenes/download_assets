@@ -1,7 +1,12 @@
 class DownloadAssetsException implements Exception {
-  DownloadAssetsException(this._message, {this.exception});
+  DownloadAssetsException(
+    this._message, {
+    this.exception,
+    this.downloadCancelled = false,
+  });
 
   final Exception? exception;
+  final bool downloadCancelled;
   final String _message;
 
   @override

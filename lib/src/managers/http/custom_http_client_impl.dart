@@ -2,22 +2,52 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
+import '../../../download_assets.dart';
 import 'custom_http_client.dart';
 
 class CustomHttpClientImpl implements CustomHttpClient {
+  CancelToken? _cancelToken;
+
   @override
   Future<Response> download(
     String urlPath,
     String savePath, {
     ProgressCallback? onReceiveProgress,
-  }) async =>
-      await Dio().download(
+    Map<String, dynamic>? requestQueryParams,
+    Map<String, String> requestExtraHeaders = const {},
+  }) async {
+    try {
+      _cancelToken = CancelToken();
+      final headers = {HttpHeaders.acceptEncodingHeader: '*'};
+
+      if (requestExtraHeaders.isNotEmpty) {
+        headers.addAll(requestExtraHeaders);
+      }
+
+      return await Dio().download(
         urlPath,
         savePath,
+        cancelToken: _cancelToken,
+        queryParameters: requestQueryParams,
         options: Options(
-          headers: {HttpHeaders.acceptEncodingHeader: '*'},
+          headers: requestExtraHeaders,
           responseType: ResponseType.bytes,
         ),
         onReceiveProgress: onReceiveProgress,
       );
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.cancel) {
+        throw DownloadAssetsException(
+          e.toString(),
+          exception: e,
+          downloadCancelled: true,
+        );
+      }
+
+      rethrow;
+    }
+  }
+
+  @override
+  void cancel() => _cancelToken?.cancel();
 }

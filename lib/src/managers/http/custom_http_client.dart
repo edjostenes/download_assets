@@ -5,5 +5,9 @@ abstract class CustomHttpClient {
     String urlPath,
     String savePath, {
     ProgressCallback? onReceiveProgress,
+    Map<String, dynamic>? requestQueryParams,
+    Map<String, String> requestExtraHeaders = const {},
   });
+
+  void cancel();
 }
