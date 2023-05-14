@@ -1,4 +1,4 @@
-## 3.0.4 - May 14, 2023
+## 3.0.5 - May 14, 2023
 
 * Added feature to cancel the download
 * Now allows send queryParameters and extra headers in the request
