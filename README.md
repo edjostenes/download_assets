@@ -16,7 +16,11 @@ This package downloads a zipped file and unzips to local storage all assets that
 * startDownload - It start the assets download.
     * assetsUrl: Full URL to the zipped file.
     * onProgress: It returns the download progress (optional).
+    * onCancel: Callback called after cancels the download (optional).
     * zippedFile: Zipped file that will be created (optional, default value is 'assets.zip').
+    * requestQueryParams: Query params to be used in the request (optional).
+    * requestExtraHeaders: Extra headers to be added in the request (optional).
+* cancelDownload - Cancel the download (optional). 
 * clearAssets - Clear all downloaded assets from local storage.
 * assetsDir - Path to the files unzipped.
 * assetsDirAlreadyExists - Returns true if the assetsDir path exists.
