@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   dio: ^5.1.2
+  path: ^1.8.3
   archive: ^3.3.7
   path_provider: ^2.0.15
 

@@ -36,7 +36,6 @@ abstract class DownloadAssetsController {
   /// [assetsUrl] -> Specify the url for your compressed file. (http://{YOUR_DOMAIN}:{FILE_NAME}.zip
   /// [onProgress] -> It's not required. Called after each iteration returning the current progress
   /// [onComplete] -> It's not required. Called when the progress is completed with success
-  /// [zippedFile] -> Zipped file's name (default value is assets.zip)
   /// [onCancel] -> Cancel the download (optional)
   /// [requestQueryParams] -> Query params to be used in the request (optional)
   /// [requestExtraHeaders] -> Extra headers to be added in the request (optional)
@@ -44,7 +43,6 @@ abstract class DownloadAssetsController {
     required String assetsUrl,
     Function(double)? onProgress,
     Function()? onCancel,
-    String zippedFile = 'assets.zip',
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},
   });

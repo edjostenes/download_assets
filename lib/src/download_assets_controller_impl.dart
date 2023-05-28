@@ -1,3 +1,5 @@
+import 'package:path/path.dart';
+
 import 'download_assets_controller.dart';
 import 'exceptions/download_assets_exception.dart';
 import 'managers/file/file_manager.dart';
@@ -69,7 +71,6 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     required String assetsUrl,
     Function(double)? onProgress,
     Function()? onCancel,
-    String zippedFile = 'assets.zip',
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},
   }) async {
@@ -78,8 +79,12 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     assert(assetsUrl.isNotEmpty, "AssetUrl param can't be empty");
 
     try {
+      // downloading file
       await fileManager.createDirectory(_assetsDir!);
-      final fullPath = '$_assetsDir/$zippedFile';
+      final file = fileManager.createFile(assetsUrl);
+      final fileName = basename(file.path);
+      //final fullPath = '$_assetsDir/$zippedFile';
+      final fullPath = '$_assetsDir/$fileName';
       var totalProgress = 0.0;
       onProgress?.call(totalProgress);
       await customHttpClient.download(
@@ -96,8 +101,21 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
         requestExtraHeaders: requestExtraHeaders,
         requestQueryParams: requestQueryParams,
       );
+      // -----------------
+
+      // creating file
       final zipFile = fileManager.createFile(fullPath);
+      final fileExtension = extension(zipFile.path);
+
+      if (!fileExtension.contains('zip')) {
+        onProgress?.call(100);
+        return;
+      }
+
       final bytes = fileManager.readAsBytesSync(zipFile);
+      // -----------------
+
+      //uncompressing
       final archive = fileManager.decodeBytes(bytes);
       await fileManager.deleteFile(zipFile);
       final totalFiles = archive.isNotEmpty ? archive.length.toDouble() : 20;
@@ -120,6 +138,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
       if (totalProgress != 100) {
         onProgress?.call(100);
       }
+      // -----------------
     } on DownloadAssetsException catch (e) {
       if (e.downloadCancelled) {
         onCancel?.call();
