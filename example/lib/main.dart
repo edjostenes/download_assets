@@ -67,17 +67,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-                Container(
-                  width: 150,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: FileImage(File(
-                          '${downloadAssetsController.assetsDir}/flutter.png')),
-                      fit: BoxFit.fitWidth,
-                    ),
-                  ),
-                )
+                // Container(
+                //   width: 150,
+                //   height: 150,
+                //   decoration: BoxDecoration(
+                //     image: DecorationImage(
+                //       image: FileImage(File(
+                //           '${downloadAssetsController.assetsDir}/flutter.png')),
+                //       fit: BoxFit.fitWidth,
+                //     ),
+                //   ),
+                // ),
               ]
             ],
           ),
@@ -134,7 +134,8 @@ class _MyHomePageState extends State<MyHomePage> {
           setState(() {});
         },
         assetsUrl:
-            'https://github.com/edjostenes/download_assets/raw/master/assets.zip',
+            // 'https://github.com/edjostenes/download_assets/raw/dev/download/assets.zip',
+            'https://github.com/edjostenes/download_assets/raw/dev/download/dart.jpeg',
         onProgress: (progressValue) {
           downloaded = false;
           setState(() {

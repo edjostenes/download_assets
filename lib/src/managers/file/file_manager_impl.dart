@@ -9,8 +9,8 @@ import 'file_manager.dart';
 class FileManagerImpl implements FileManager {
   @override
   Future<Directory> createDirectory(String directoryPath,
-          {bool recursive = false}) async =>
-      await Directory(directoryPath).create(recursive: recursive);
+          {bool recursive = false}) =>
+      Directory(directoryPath).create(recursive: recursive);
 
   @override
   File createFile(String fullPath) => File(fullPath);
@@ -21,21 +21,20 @@ class FileManagerImpl implements FileManager {
       ZipDecoder().decodeBytes(data, verify: verify, password: password);
 
   @override
-  Future<FileSystemEntity> deleteFile(File file,
-          {bool recursive = false}) async =>
-      await file.delete();
+  Future<FileSystemEntity> deleteFile(File file, {bool recursive = false}) =>
+      file.delete();
 
   @override
   Future<FileSystemEntity> deleteDirectory(String directoryPath,
-          {bool recursive = false}) async =>
-      await Directory(directoryPath).delete(recursive: true);
+          {bool recursive = false}) =>
+      Directory(directoryPath).delete(recursive: true);
 
   @override
-  Future<bool> directoryExists(String directoryPath) async =>
-      await Directory(directoryPath).exists();
+  Future<bool> directoryExists(String directoryPath) =>
+      Directory(directoryPath).exists();
 
   @override
-  Future<bool> fileExists(String fileDir) async => await File(fileDir).exists();
+  Future<bool> fileExists(String fileDir) => File(fileDir).exists();
 
   @override
   Future<String> getApplicationPath() async =>
@@ -45,10 +44,9 @@ class FileManagerImpl implements FileManager {
   Uint8List readAsBytesSync(File file) => file.readAsBytesSync();
 
   @override
-  Future<File> createFileRecursively(File file) async =>
-      await file.create(recursive: true);
+  Future<File> createFileRecursively(File file) => file.create(recursive: true);
 
   @override
-  Future<File> writeAsBytes(File file, List<int> bytes) async =>
-      await file.writeAsBytes(bytes);
+  Future<File> writeAsBytes(File file, List<int> bytes) =>
+      file.writeAsBytes(bytes);
 }

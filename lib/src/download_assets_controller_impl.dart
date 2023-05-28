@@ -81,9 +81,8 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     try {
       // downloading file
       await fileManager.createDirectory(_assetsDir!);
-      final file = fileManager.createFile(assetsUrl);
-      final fileName = basename(file.path);
-      //final fullPath = '$_assetsDir/$zippedFile';
+      final urlFile = fileManager.createFile(assetsUrl);
+      final fileName = basename(urlFile.path);
       final fullPath = '$_assetsDir/$fileName';
       var totalProgress = 0.0;
       onProgress?.call(totalProgress);
