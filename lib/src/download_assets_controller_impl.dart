@@ -133,6 +133,10 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
         final zipFile = fileManager.createFile(fullPath);
 
         if (!isCompressed) {
+          if (totalProgress >= 100) {
+            onProgress?.call(totalProgress);
+          }
+
           continue;
         }
         // -----------------

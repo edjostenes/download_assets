@@ -134,9 +134,9 @@ class _MyHomePageState extends State<MyHomePage> {
           setState(() {});
         },
         assetsUrls: [
-          'https://github.com/edjostenes/download_assets/raw/dev/download/assets.zip',
           'https://github.com/edjostenes/download_assets/raw/dev/download/image_1.png',
           'https://github.com/edjostenes/download_assets/raw/dev/download/image_2.png',
+          'https://github.com/edjostenes/download_assets/raw/dev/download/assets.zip',
           'https://github.com/edjostenes/download_assets/raw/dev/download/image_3.png',
         ],
         onProgress: (progressValue) {
@@ -144,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
           setState(() {
             downloaded = progressValue >= 100;
             message = 'Downloading - ${progressValue.toStringAsFixed(2)}';
-            print(message);
+            // print(message);
 
             if (downloaded) {
               message =
