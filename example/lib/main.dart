@@ -33,6 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
       DownloadAssetsController();
   String message = 'Press the download button to start the download';
   bool downloaded = false;
+  double value = 0.0;
 
   @override
   void initState() {
@@ -77,8 +78,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       fit: BoxFit.fitWidth,
                     ),
                   ),
-                )
-              ]
+                ),
+              ],
             ],
           ),
         ),
@@ -128,24 +129,29 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     try {
+      value = 0.0;
       await downloadAssetsController.startDownload(
         onCancel: () {
           message = 'Cancelled by user';
           setState(() {});
         },
-        assetsUrl:
-            'https://github.com/edjostenes/download_assets/raw/master/assets.zip',
+        assetsUrls: [
+          'https://github.com/edjostenes/download_assets/raw/dev/download/image_1.png',
+          'https://github.com/edjostenes/download_assets/raw/dev/download/image_2.png',
+          'https://github.com/edjostenes/download_assets/raw/dev/download/assets.zip',
+          'https://github.com/edjostenes/download_assets/raw/dev/download/image_3.png',
+        ],
         onProgress: (progressValue) {
           downloaded = false;
+          value = progressValue;
           setState(() {
-            if (progressValue < 100) {
-              message = 'Downloading - ${progressValue.toStringAsFixed(2)}';
-              print(message);
-            } else {
+            downloaded = progressValue >= 100;
+            message = 'Downloading - ${progressValue.toStringAsFixed(2)}';
+            print(message);
+
+            if (downloaded) {
               message =
                   'Download completed\nClick in refresh button to force download';
-              print(message);
-              downloaded = true;
             }
           });
         },

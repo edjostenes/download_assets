@@ -3,14 +3,12 @@ import 'managers/file/file_manager_impl.dart';
 import 'managers/http/custom_http_client_impl.dart';
 
 abstract class DownloadAssetsController {
-  factory DownloadAssetsController({String directory = 'assets'}) =>
-      createObject(
+  factory DownloadAssetsController() => createObject(
         fileManager: FileManagerImpl(),
         customHttpClient: CustomHttpClientImpl(),
       );
 
-  /// Initialize the package setting up the assetPath.
-  /// It must be called to set up the assetDir path.
+  /// Initialization method for setting up the assetsDir, which is required to be called during app initialization.
   /// [assetDir] -> Not required. Path to directory where your zipFile will be downloaded and unzipped (default value is getApplicationPath + assets)
   /// [useFullDirectoryPath] -> Not required (default value is false). If this is true the getApplicationPath won't be used (make sure that the app has to write permission and it is a valid path)
   Future init({
@@ -32,18 +30,16 @@ abstract class DownloadAssetsController {
   Future clearAssets();
 
   /// Start the download of your content to local storage, uncompress all data and delete
-  /// the compressed file.
-  /// [assetsUrl] -> Specify the url for your compressed file. (http://{YOUR_DOMAIN}:{FILE_NAME}.zip
+  /// the compressed file. It's not required be compressed file.
+  /// [assetsUrls] -> A list of URLs representing each file to be downloaded. (http://{YOUR_DOMAIN}:{FILE_NAME}.{EXTENSION})
   /// [onProgress] -> It's not required. Called after each iteration returning the current progress
-  /// [onCancel] -> Callback called after cancels the download (optional).
-  /// [zippedFile] -> Zipped file's name (default value is assets.zip)
+  /// [onCancel] -> Cancel the download (optional)
   /// [requestQueryParams] -> Query params to be used in the request (optional)
   /// [requestExtraHeaders] -> Extra headers to be added in the request (optional)
   Future startDownload({
-    required String assetsUrl,
+    required List<String> assetsUrls,
     Function(double)? onProgress,
     Function()? onCancel,
-    String zippedFile = 'assets.zip',
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},
   });

@@ -1,6 +1,6 @@
 name: download_assets
-description: Download and uncompress assets in the user device basically, read the documentation for more information about this package.
-version: 3.0.5
+description: Download assets into the application.
+version: 3.1.0
 homepage: https://github.com/edjostenes/download_assets
 
 environment:
@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   dio: ^5.1.2
+  path: ^1.8.3
   archive: ^3.3.7
   path_provider: ^2.0.15
 

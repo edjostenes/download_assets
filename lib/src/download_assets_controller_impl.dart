@@ -1,7 +1,11 @@
+import 'package:path/path.dart';
+
 import 'download_assets_controller.dart';
 import 'exceptions/download_assets_exception.dart';
 import 'managers/file/file_manager.dart';
 import 'managers/http/custom_http_client.dart';
+
+const _maxProgress = 100.0;
 
 DownloadAssetsController createObject({
   required FileManager fileManager,
@@ -66,59 +70,110 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
 
   @override
   Future startDownload({
-    required String assetsUrl,
+    required List<String> assetsUrls,
     Function(double)? onProgress,
     Function()? onCancel,
-    String zippedFile = 'assets.zip',
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},
   }) async {
     assert(assetsDir != null,
         'DownloadAssets has not been initialized. Call init method first');
-    assert(assetsUrl.isNotEmpty, "AssetUrl param can't be empty");
+    assert(assetsUrls.isNotEmpty, "AssetUrl param can't be empty");
 
     try {
-      await fileManager.createDirectory(_assetsDir!);
-      final fullPath = '$_assetsDir/$zippedFile';
       var totalProgress = 0.0;
       onProgress?.call(totalProgress);
-      await customHttpClient.download(
-        assetsUrl,
-        fullPath,
-        onReceiveProgress: (received, total) {
-          if (total != -1) {
-            final progress = (received / total * 100);
-            totalProgress = progress - (progress * 0.2);
-          }
+      final totalProgressPerFile = _maxProgress / assetsUrls.length;
+      await fileManager.createDirectory(_assetsDir!);
 
-          onProgress?.call(totalProgress <= 0 ? 0 : totalProgress);
-        },
-        requestExtraHeaders: requestExtraHeaders,
-        requestQueryParams: requestQueryParams,
-      );
-      final zipFile = fileManager.createFile(fullPath);
-      final bytes = fileManager.readAsBytesSync(zipFile);
-      final archive = fileManager.decodeBytes(bytes);
-      await fileManager.deleteFile(zipFile);
-      final totalFiles = archive.isNotEmpty ? archive.length.toDouble() : 20;
-      final increment = 20 / totalFiles;
+      for (var i = 0; i < assetsUrls.length; i++) {
+        final assetsUrl = assetsUrls[i];
+        var fileMaxProgress = totalProgressPerFile * (i + 1);
 
-      for (final file in archive) {
-        final filename = '$_assetsDir/${file.name}';
-
-        if (!file.isFile) {
-          continue;
+        if (fileMaxProgress > _maxProgress) {
+          fileMaxProgress = _maxProgress;
         }
 
-        var outFile = fileManager.createFile(filename);
-        outFile = await fileManager.createFileRecursively(outFile);
-        await fileManager.writeAsBytes(outFile, file.content);
-        totalProgress += increment;
-        onProgress?.call(totalProgress);
+        // file extension and name
+        final urlFile = fileManager.createFile(assetsUrl);
+        final fileName = basename(urlFile.path);
+        final fileExtension = extension(urlFile.path);
+        final isCompressed = fileExtension.contains('zip');
+        // -------------------------
+
+        // downloading file
+        final fullPath = '$_assetsDir/$fileName';
+        await customHttpClient.download(
+          assetsUrl,
+          fullPath,
+          onReceiveProgress: (received, total) {
+            if (total != -1) {
+              final progress = received / total * _maxProgress;
+
+              /// It's not required reduce the percentage that will be used to uncompress file
+              /// when it's not an compressed file
+              final offsetCompression =
+                  progress - (isCompressed ? (progress * 0.2) : 0);
+
+              if (offsetCompression >= fileMaxProgress) {
+                totalProgress = fileMaxProgress;
+              } else {
+                totalProgress += offsetCompression;
+              }
+            }
+
+            if (totalProgress < _maxProgress) {
+              onProgress?.call(totalProgress);
+            }
+          },
+          requestExtraHeaders: requestExtraHeaders,
+          requestQueryParams: requestQueryParams,
+        );
+        // -----------------
+
+        // creating file
+        final zipFile = fileManager.createFile(fullPath);
+
+        if (!isCompressed) {
+          if (totalProgress >= _maxProgress) {
+            onProgress?.call(totalProgress);
+          }
+
+          continue;
+        }
+        // -----------------
+
+        //uncompressing
+        final bytes = fileManager.readAsBytesSync(zipFile);
+        final archive = fileManager.decodeBytes(bytes);
+        await fileManager.deleteFile(zipFile);
+        final totalFiles = archive.isNotEmpty ? archive.length.toDouble() : 20;
+
+        ///amount that will be increased by file inside the archive
+        ///proportional to the max value progress
+        final increment = (20 / totalFiles) * (1 / assetsUrls.length);
+
+        for (final file in archive) {
+          final filename = '$_assetsDir/${file.name}';
+
+          if (!file.isFile) {
+            continue;
+          }
+
+          var outFile = fileManager.createFile(filename);
+          outFile = await fileManager.createFileRecursively(outFile);
+          await fileManager.writeAsBytes(outFile, file.content);
+          totalProgress += increment;
+
+          if (totalProgress < _maxProgress) {
+            onProgress?.call(totalProgress);
+          }
+        }
+        // -----------------
       }
 
-      if (totalProgress != 100) {
-        onProgress?.call(100);
+      if (totalProgress != _maxProgress) {
+        onProgress?.call(_maxProgress);
       }
     } on DownloadAssetsException catch (e) {
       if (e.downloadCancelled) {
