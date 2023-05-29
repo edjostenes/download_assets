@@ -5,6 +5,8 @@ import 'exceptions/download_assets_exception.dart';
 import 'managers/file/file_manager.dart';
 import 'managers/http/custom_http_client.dart';
 
+const _maxProgress = 100.0;
+
 DownloadAssetsController createObject({
   required FileManager fileManager,
   required CustomHttpClient customHttpClient,
@@ -81,15 +83,15 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     try {
       var totalProgress = 0.0;
       onProgress?.call(totalProgress);
-      final totalProgressPerFile = 100 / assetsUrls.length;
+      final totalProgressPerFile = _maxProgress / assetsUrls.length;
       await fileManager.createDirectory(_assetsDir!);
 
       for (var i = 0; i < assetsUrls.length; i++) {
         final assetsUrl = assetsUrls[i];
-        var currentMaxProgress = totalProgressPerFile * (i + 1);
+        var fileMaxProgress = totalProgressPerFile * (i + 1);
 
-        if (currentMaxProgress > 100) {
-          currentMaxProgress = 100;
+        if (fileMaxProgress > _maxProgress) {
+          fileMaxProgress = _maxProgress;
         }
 
         // file extension and name
@@ -106,21 +108,21 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
           fullPath,
           onReceiveProgress: (received, total) {
             if (total != -1) {
-              final progress = received / total * 100;
+              final progress = received / total * _maxProgress;
 
               /// It's not required reduce the percentage that will be used to uncompress file
               /// when it's not an compressed file
-              final progressLessCompressionTime =
+              final offsetCompression =
                   progress - (isCompressed ? (progress * 0.2) : 0);
 
-              if (progressLessCompressionTime >= currentMaxProgress) {
-                totalProgress = currentMaxProgress;
+              if (offsetCompression >= fileMaxProgress) {
+                totalProgress = fileMaxProgress;
               } else {
-                totalProgress += progressLessCompressionTime;
+                totalProgress += offsetCompression;
               }
             }
 
-            if (totalProgress < 100) {
+            if (totalProgress < _maxProgress) {
               onProgress?.call(totalProgress);
             }
           },
@@ -133,7 +135,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
         final zipFile = fileManager.createFile(fullPath);
 
         if (!isCompressed) {
-          if (totalProgress >= 100) {
+          if (totalProgress >= _maxProgress) {
             onProgress?.call(totalProgress);
           }
 
@@ -163,15 +165,15 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
           await fileManager.writeAsBytes(outFile, file.content);
           totalProgress += increment;
 
-          if (totalProgress < 100) {
+          if (totalProgress < _maxProgress) {
             onProgress?.call(totalProgress);
           }
         }
         // -----------------
       }
 
-      if (totalProgress != 100) {
-        onProgress?.call(100);
+      if (totalProgress != _maxProgress) {
+        onProgress?.call(_maxProgress);
       }
     } on DownloadAssetsException catch (e) {
       if (e.downloadCancelled) {

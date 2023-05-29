@@ -144,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
           setState(() {
             downloaded = progressValue >= 100;
             message = 'Downloading - ${progressValue.toStringAsFixed(2)}';
-            // print(message);
+            print(message);
 
             if (downloaded) {
               message =
