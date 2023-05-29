@@ -1,27 +1,62 @@
 [![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
 
-# About download_assets
+# Download_assets
 
-This package downloads a zipped file and unzips to local storage all assets that are not included in your app. Some files, like images, sometimes, must not be included in your build.
+## About
 
-# Supported platforms
+The download_assets package is a powerful library that facilitates the process of downloading assets
+into the application. With this library, you can easily download files, images, videos, and other
+resources in your app, providing a smooth and efficient user experience.
 
-* iOS
-* Android
-* Windows
+## Features
 
-# Methods
+### init
 
-* init - Method that sets up the assetsDir and must be called on the app initialization.
-* startDownload - It start the assets download.
-    * assetsUrl: Full URL to the zipped file.
-    * onProgress: It returns the download progress (optional).
-    * zippedFile: Zipped file that will be created (optional, default value is 'assets.zip').
-* clearAssets - Clear all downloaded assets from local storage.
-* assetsDir - Path to the files unzipped.
-* assetsDirAlreadyExists - Returns true if the assetsDir path exists.
-* assetsFileExists - Return true if the file exists.
+Initialization method for setting up the assetsDir, which is required to be called during app initialization.
 
-# Example
+### startDownload
+
+Starts the asset download process.
+
+* 'assetsUrls': A list of URLs representing each file to be downloaded.
+* 'onProgress': Optional callback function that provides download progress information.
+* 'onCancel': Cancels the ongoing download.
+
+```
+await downloadAssetsController.startDownload(
+    onCancel: () {
+        //TODO: implement cancel here
+    },
+    assetsUrls: [
+      'https://github.com/edjostenes/download_assets/raw/dev/download/assets.zip',
+    ],
+    onProgress: (progressValue) {
+        //TODO: Implement progress here
+    },
+);
+```
+
+### clearAssets
+
+Remove all downloaded assets from local storage.
+
+### assetsDir
+
+Path to the files.
+
+### assetsDirAlreadyExists
+
+Returns **true** if the **assetsDir** path exists.
+
+### assetsFileExists
+
+Return **true** if the file exists.
+
+## Example
 
 You can find an example here: https://github.com/edjostenes/download_assets/tree/master/example
+
+## Contributing
+
+Contributions are welcome! If you encounter any issues or have suggestions for improvement,
+please create an issue on the GitHub repository.
