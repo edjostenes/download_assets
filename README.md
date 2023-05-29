@@ -29,6 +29,7 @@ await downloadAssetsController.startDownload(
     },
     assetsUrls: [
       'https://github.com/edjostenes/download_assets/raw/dev/download/assets.zip',
+      'https://github.com/edjostenes/download_assets/raw/dev/download/image_1.png',
     ],
     onProgress: (progressValue) {
         //TODO: Implement progress here
