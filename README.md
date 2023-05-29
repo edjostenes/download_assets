@@ -18,9 +18,9 @@ Initialization method for setting up the assetsDir, which is required to be call
 
 Starts the asset download process.
 
-* 'assetsUrls': A list of URLs representing each file to be downloaded.
-* 'onProgress': Optional callback function that provides download progress information.
-* 'onCancel': Cancels the ongoing download.
+* *assetsUrls*: A list of URLs representing each file to be downloaded.
+* *onProgress*: Optional callback function that provides download progress information.
+* *onCancel*: Cancels the ongoing download.
 
 ```
 await downloadAssetsController.startDownload(
