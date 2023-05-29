@@ -32,8 +32,8 @@ abstract class DownloadAssetsController {
   Future clearAssets();
 
   /// Start the download of your content to local storage, uncompress all data and delete
-  /// the compressed file.
-  /// [assetsUrls] -> Specify the url for your compressed file. (http://{YOUR_DOMAIN}:{FILE_NAME}.zip
+  /// the compressed file. It's not required be compressed file.
+  /// [assetsUrls] -> Specify the list of urls to be downloaded. Compressed files will be uncompressed automatically. (http://{YOUR_DOMAIN}:{FILE_NAME}.{EXTENSION}
   /// [onProgress] -> It's not required. Called after each iteration returning the current progress
   /// [onComplete] -> It's not required. Called when the progress is completed with success
   /// [onCancel] -> Cancel the download (optional)
