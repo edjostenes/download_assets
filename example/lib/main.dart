@@ -33,6 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
       DownloadAssetsController();
   String message = 'Press the download button to start the download';
   bool downloaded = false;
+  double value = 0.0;
 
   @override
   void initState() {
@@ -78,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-              ]
+              ],
             ],
           ),
         ),
@@ -128,6 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     try {
+      value = 0.0;
       await downloadAssetsController.startDownload(
         onCancel: () {
           message = 'Cancelled by user';
@@ -141,6 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         onProgress: (progressValue) {
           downloaded = false;
+          value = progressValue;
           setState(() {
             downloaded = progressValue >= 100;
             message = 'Downloading - ${progressValue.toStringAsFixed(2)}';
