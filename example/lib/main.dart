@@ -67,17 +67,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-                // Container(
-                //   width: 150,
-                //   height: 150,
-                //   decoration: BoxDecoration(
-                //     image: DecorationImage(
-                //       image: FileImage(File(
-                //           '${downloadAssetsController.assetsDir}/flutter.png')),
-                //       fit: BoxFit.fitWidth,
-                //     ),
-                //   ),
-                // ),
+                Container(
+                  width: 150,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: FileImage(File(
+                          '${downloadAssetsController.assetsDir}/flutter.png')),
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
+                ),
               ]
             ],
           ),
@@ -133,20 +133,22 @@ class _MyHomePageState extends State<MyHomePage> {
           message = 'Cancelled by user';
           setState(() {});
         },
-        assetsUrl:
-            // 'https://github.com/edjostenes/download_assets/raw/dev/download/assets.zip',
-            'https://github.com/edjostenes/download_assets/raw/dev/download/dart.jpeg',
+        assetsUrls: [
+          'https://github.com/edjostenes/download_assets/raw/dev/download/assets.zip',
+          'https://github.com/edjostenes/download_assets/raw/dev/download/image_1.png',
+          'https://github.com/edjostenes/download_assets/raw/dev/download/image_2.png',
+          'https://github.com/edjostenes/download_assets/raw/dev/download/image_3.png',
+        ],
         onProgress: (progressValue) {
           downloaded = false;
           setState(() {
-            if (progressValue < 100) {
-              message = 'Downloading - ${progressValue.toStringAsFixed(2)}';
-              print(message);
-            } else {
+            downloaded = progressValue >= 100;
+            message = 'Downloading - ${progressValue.toStringAsFixed(2)}';
+            print(message);
+
+            if (downloaded) {
               message =
                   'Download completed\nClick in refresh button to force download';
-              print(message);
-              downloaded = true;
             }
           });
         },
