@@ -9,7 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  dio: ^5.1.2
+  dio: ^5.2.1+1
   path: ^1.8.3
   archive: ^3.3.7
   path_provider: ^2.0.15
@@ -17,6 +17,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
+  flutter_lints: ^2.0.2
 
 flutter:
