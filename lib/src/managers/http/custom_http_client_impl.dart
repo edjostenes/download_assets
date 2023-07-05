@@ -35,8 +35,8 @@ class CustomHttpClientImpl implements CustomHttpClient {
         ),
         onReceiveProgress: onReceiveProgress,
       );
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.cancel) {
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.cancel) {
         throw DownloadAssetsException(
           e.toString(),
           exception: e,
