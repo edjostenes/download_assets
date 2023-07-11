@@ -6,7 +6,8 @@ import 'managers/file/file_manager.dart';
 import 'managers/http/custom_http_client.dart';
 import 'uncompress_delegate/uncompress_delegate.dart';
 
-const _maxProgress = 100.0;
+const _threshold = 98.0;
+const _maxTotal = 100.0;
 
 DownloadAssetsController createObject({
   required FileManager fileManager,
@@ -83,39 +84,34 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     assert(assetsUrls.isNotEmpty, "AssetUrl param can't be empty");
 
     try {
-      // var totalProgress = 0.0;
-      onProgress?.call(0.0);
-      // final totalProgressPerFile = _maxProgress / assetsUrls.length;
+      var totalProgress = 0.0;
+      onProgress?.call(totalProgress);
       await fileManager.createDirectory(_assetsDir!);
 
-      for (var i = 0; i < assetsUrls.length; i++) {
-        final assetsUrl = assetsUrls[i];
+      for (final assetsUrl in assetsUrls) {
         final fileName = basename(assetsUrl);
         final fileExtension = extension(assetsUrl);
         final fullPath = '$_assetsDir/$fileName';
-        // var fileMaxProgress = totalProgressPerFile * (i + 1);
-
-        // if (fileMaxProgress > _maxProgress) {
-        //   fileMaxProgress = _maxProgress;
-        // }
-
+        var previousProgress = 0.0;
         await customHttpClient.download(
           assetsUrl,
           fullPath,
           onReceiveProgress: (received, total) {
-            // if (total != -1) {
-            //   final progress = received / total * _maxProgress;
-            //
-            //   if (progress >= fileMaxProgress) {
-            //     totalProgress = progress;
-            //   } else {
-            //     totalProgress += progress;
-            //   }
-            // }
-            //
-            // if (totalProgress < _maxProgress) {
-            //   onProgress?.call(totalProgress);
-            // }
+            if (total == -1) {
+              return;
+            }
+
+            final percent = received / total;
+            final progress = percent * _maxTotal;
+            final increment = progress - previousProgress;
+            totalProgress += increment;
+            previousProgress = progress;
+
+            if (totalProgress >= _threshold || increment.round() == 0) {
+              return;
+            }
+
+            onProgress?.call(totalProgress);
           },
           requestExtraHeaders: requestExtraHeaders,
           requestQueryParams: requestQueryParams,
@@ -131,7 +127,9 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
         }
       }
 
-      onProgress?.call(_maxProgress);
+      if (totalProgress >= _threshold) {
+        onProgress?.call(_maxTotal);
+      }
     } on DownloadAssetsException catch (e) {
       if (e.downloadCancelled) {
         onCancel?.call();
