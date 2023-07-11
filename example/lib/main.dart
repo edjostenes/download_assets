@@ -95,7 +95,10 @@ class _MyHomePageState extends State<MyHomePage> {
               width: 25,
             ),
             FloatingActionButton(
-              onPressed: _refresh,
+              onPressed: () async {
+                await downloadAssetsController.clearAssets();
+                await _downloadAssets();
+              },
               tooltip: 'Refresh',
               child: Icon(Icons.refresh),
             ),
@@ -110,11 +113,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ), // This trailing comma makes auto-formatting nicer for build methods.
       );
-
-  Future _refresh() async {
-    await downloadAssetsController.clearAssets();
-    await _downloadAssets();
-  }
 
   Future _downloadAssets() async {
     final assetsDownloaded =
@@ -136,10 +134,10 @@ class _MyHomePageState extends State<MyHomePage> {
           setState(() {});
         },
         assetsUrls: [
-          'https://github.com/edjostenes/download_assets/raw/dev/download/image_1.png',
-          'https://github.com/edjostenes/download_assets/raw/dev/download/image_2.png',
-          'https://github.com/edjostenes/download_assets/raw/dev/download/assets.zip',
-          'https://github.com/edjostenes/download_assets/raw/dev/download/image_3.png',
+          'https://github.com/edjostenes/download_assets/raw/main/download/image_1.png',
+          'https://github.com/edjostenes/download_assets/raw/main/download/image_2.png',
+          'https://github.com/edjostenes/download_assets/raw/main/download/image_3.png',
+          'https://github.com/edjostenes/download_assets/raw/main/download/assets.zip',
         ],
         onProgress: (progressValue) {
           downloaded = false;

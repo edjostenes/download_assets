@@ -1,6 +1,7 @@
 import 'download_assets_controller_impl.dart';
 import 'managers/file/file_manager_impl.dart';
 import 'managers/http/custom_http_client_impl.dart';
+import 'uncompress_delegate/uncompress_delegate.dart';
 
 abstract class DownloadAssetsController {
   factory DownloadAssetsController() => createObject(
@@ -38,6 +39,7 @@ abstract class DownloadAssetsController {
   /// [requestExtraHeaders] -> Extra headers to be added in the request (optional)
   Future startDownload({
     required List<String> assetsUrls,
+    List<UncompressDelegate> uncompressDelegates = const [],
     Function(double)? onProgress,
     Function()? onCancel,
     Map<String, dynamic>? requestQueryParams,
