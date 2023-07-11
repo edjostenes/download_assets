@@ -33,13 +33,15 @@ abstract class DownloadAssetsController {
   /// Start the download of your content to local storage, uncompress all data and delete
   /// the compressed file. It's not required be compressed file.
   /// [assetsUrls] -> A list of URLs representing each file to be downloaded. (http://{YOUR_DOMAIN}:{FILE_NAME}.{EXTENSION})
+  /// [uncompressDelegates] -> An optional list of [UncompressDelegate] objects responsible for handling asset decompression, if needed.
+  /// If the [uncompressDelegates] list is empty, the [UnzipDelegate] class is automatically added as a delegate for ZIP file decompression.
   /// [onProgress] -> It's not required. Called after each iteration returning the current progress
   /// [onCancel] -> Cancel the download (optional)
   /// [requestQueryParams] -> Query params to be used in the request (optional)
   /// [requestExtraHeaders] -> Extra headers to be added in the request (optional)
   Future startDownload({
     required List<String> assetsUrls,
-    List<UncompressDelegate> uncompressDelegates = const [],
+    List<UncompressDelegate> uncompressDelegates = const [UnzipDelegate()],
     Function(double)? onProgress,
     Function()? onCancel,
     Map<String, dynamic>? requestQueryParams,

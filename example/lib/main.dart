@@ -135,9 +135,9 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         assetsUrls: [
           'https://github.com/edjostenes/download_assets/raw/main/download/image_1.png',
+          'https://github.com/edjostenes/download_assets/raw/main/download/assets.zip',
           'https://github.com/edjostenes/download_assets/raw/main/download/image_2.png',
           'https://github.com/edjostenes/download_assets/raw/main/download/image_3.png',
-          'https://github.com/edjostenes/download_assets/raw/main/download/assets.zip',
         ],
         onProgress: (progressValue) {
           downloaded = false;
