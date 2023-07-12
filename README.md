@@ -25,7 +25,7 @@ Starts the asset download process.
 
 * *assetsUrls*: A list of URLs representing each file to be downloaded.
 * *uncompressDelegates*: A list of custom decompression delegates for different types of file, such
-  as ZIP, RAR, etc.
+  as ZIP, RAR, etc (optional).
 * *onProgress*: Optional callback function that provides download progress information.
 * *onCancel*: Cancels the ongoing download.
 * *requestQueryParams*: Query params to be used in the request (optional).
@@ -37,8 +37,10 @@ await downloadAssetsController.startDownload(
         //TODO: implement cancel here
     },
     assetsUrls: [
-      'https://github.com/edjostenes/download_assets/raw/dev/download/assets.zip',
-      'https://github.com/edjostenes/download_assets/raw/dev/download/image_1.png',
+      'https://github.com/edjostenes/download_assets/raw/main/download/image_1.png',
+      'https://github.com/edjostenes/download_assets/raw/main/download/assets.zip',
+      'https://github.com/edjostenes/download_assets/raw/main/download/image_2.png',
+      'https://github.com/edjostenes/download_assets/raw/main/download/image_3.png',
     ],
     onProgress: (progressValue) {
         //TODO: Implement progress here
