@@ -1,5 +1,5 @@
 name: download_assets
-description: Download assets into the application.
+description: Retrieve assets and add them to the application's repository for use.
 version: 3.1.1
 homepage: https://github.com/edjostenes/download_assets
 

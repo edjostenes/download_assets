@@ -101,8 +101,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
               return;
             }
 
-            final percent = received / total;
-            final progress = percent * _maxTotal;
+            final progress = (received / total) * _maxTotal;
             final increment = progress - previousProgress;
             totalProgress += increment;
             previousProgress = progress;
