@@ -1,3 +1,9 @@
+## 3.1.1 - July 12, 2023
+* Added the optional parameter uncompressDelegates to the startDownload() method.
+  * Description: This parameter allows providing a list of custom uncompression delegates for the download process. Uncompression delegates are responsible for implementing the logic to uncompress different types of files, such as ZIP, RAR, etc. By providing a list of delegates, it becomes possible to support multiple file formats during the download.
+  * Default value: [UnzipDelegate()]
+* Created UnzipDelegate to decompress .ZIP files
+
 ## 3.1.0 - May 29, 2023
 * No longer necessary to specify whether the downloaded file is compressed.
 
