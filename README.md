@@ -10,7 +10,7 @@ resources in your app, providing a smooth and efficient user experience.
 
 ## Features
 
-### init
+### *init*
 
 Init method for setting up the assetsDir, which is required to be called during app
 initialization.
@@ -19,7 +19,7 @@ initialization.
 await downloadAssetsController.init();
 ```
 
-### startDownload
+### *startDownload*
 
 Starts the asset download process.
 
@@ -48,7 +48,7 @@ await downloadAssetsController.startDownload(
 );
 ```
 
-### clearAssets
+### *clearAssets*
 
 Remove all downloaded assets from local storage.
 
@@ -56,7 +56,7 @@ Remove all downloaded assets from local storage.
 await downloadAssetsController.clearAssets();
 ```
 
-### assetsDir
+### *assetsDir*
 
 Path to the files.
 
@@ -64,7 +64,7 @@ Path to the files.
 File('${downloadAssetsController.assetsDir}/<file_name>.<file_extension>');
 ```
 
-### assetsDirAlreadyExists
+### *assetsDirAlreadyExists*
 
 Returns **true** if the **assetsDir** path exists.
 
@@ -72,7 +72,7 @@ Returns **true** if the **assetsDir** path exists.
 return await downloadAssetsController.assetsDirAlreadyExists();
 ```
 
-### assetsFileExists
+### *assetsFileExists*
 
 Return **true** if the file exists.
 
@@ -99,7 +99,6 @@ abstract class UncompressDelegate {
   /// uncompress the asset located at [compressedFilePath] to the specified [assetsDir].
   /// [compressedFilePath] -> The path to the compressed asset file.
   /// [assetsDir] -> The directory where the uncompressed asset should be stored.
-  /// Returns a [Future] representing the completion of the decompression process.
   Future uncompress(String compressedFilePath, String assetsDir);
 }
 ```
