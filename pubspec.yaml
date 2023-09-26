@@ -9,14 +9,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  dio: ^5.2.1+1
+  dio: ^5.3.3
   path: ^1.8.3
-  archive: ^3.3.7
-  path_provider: ^2.0.15
+  archive: ^3.4.2
+  path_provider: ^2.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.2
+  flutter_lints: ^2.0.3
 
 flutter:
