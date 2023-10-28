@@ -47,15 +47,13 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
 
   @override
   Future<bool> assetsDirAlreadyExists() async {
-    assert(assetsDir != null,
-        'DownloadAssets has not been initialized. Call init method first');
+    assert(assetsDir != null, 'DownloadAssets has not been initialized. Call init method first');
     return await fileManager.directoryExists(_assetsDir!);
   }
 
   @override
   Future<bool> assetsFileExists(String file) async {
-    assert(assetsDir != null,
-        'DownloadAssets has not been initialized. Call init method first');
+    assert(assetsDir != null, 'DownloadAssets has not been initialized. Call init method first');
     return await fileManager.fileExists('$_assetsDir/$file');
   }
 
@@ -79,8 +77,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},
   }) async {
-    assert(assetsDir != null,
-        'DownloadAssets has not been initialized. Call init method first');
+    assert(assetsDir != null, 'DownloadAssets has not been initialized. Call init method first');
     assert(assetsUrls.isNotEmpty, "AssetUrl param can't be empty");
 
     try {
