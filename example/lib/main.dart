@@ -29,8 +29,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  DownloadAssetsController downloadAssetsController =
-      DownloadAssetsController();
+  DownloadAssetsController downloadAssetsController = DownloadAssetsController();
   String message = 'Press the download button to start the download';
   bool downloaded = false;
   double value = 0.0;
@@ -62,8 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: 150,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: FileImage(File(
-                          '${downloadAssetsController.assetsDir}/dart.jpeg')),
+                      image: FileImage(File('${downloadAssetsController.assetsDir}/dart.jpeg')),
                       fit: BoxFit.fitWidth,
                     ),
                   ),
@@ -73,8 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: 150,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: FileImage(File(
-                          '${downloadAssetsController.assetsDir}/flutter.png')),
+                      image: FileImage(File('${downloadAssetsController.assetsDir}/flutter.png')),
                       fit: BoxFit.fitWidth,
                     ),
                   ),
@@ -115,8 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 
   Future _downloadAssets() async {
-    final assetsDownloaded =
-        await downloadAssetsController.assetsDirAlreadyExists();
+    final assetsDownloaded = await downloadAssetsController.assetsDirAlreadyExists();
 
     if (assetsDownloaded) {
       setState(() {
@@ -148,8 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
             print(message);
 
             if (downloaded) {
-              message =
-                  'Download completed\nClick in refresh button to force download';
+              message = 'Download completed\nClick in refresh button to force download';
             }
           });
         },

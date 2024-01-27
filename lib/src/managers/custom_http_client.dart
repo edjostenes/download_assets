@@ -2,8 +2,19 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
-import '../../../download_assets.dart';
-import 'custom_http_client.dart';
+import '../exceptions/download_assets_exception.dart';
+
+abstract class CustomHttpClient {
+  Future<Response> download(
+    String urlPath,
+    String savePath, {
+    ProgressCallback? onReceiveProgress,
+    Map<String, dynamic>? requestQueryParams,
+    Map<String, String> requestExtraHeaders = const {},
+  });
+
+  void cancel();
+}
 
 class CustomHttpClientImpl implements CustomHttpClient {
   CancelToken? _cancelToken;
