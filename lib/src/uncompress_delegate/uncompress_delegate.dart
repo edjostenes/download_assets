@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 
 /// Abstract class representing a delegate for asset decompression.
-abstract class UncompressDelegate {
+abstract interface class UncompressDelegate {
   const UncompressDelegate();
 
   /// Gets the file extension associated with the delegate.
@@ -24,7 +24,7 @@ abstract class UncompressDelegate {
 /// ```dart
 /// UncompressDelegate unzipDelegate = UnzipDelegate();
 /// ```
-class UnzipDelegate implements UncompressDelegate {
+final class UnzipDelegate implements UncompressDelegate {
   const UnzipDelegate();
 
   @override

@@ -15,20 +15,18 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: MyHomePage(title: 'Download Assets'),
+        home: MyHomePage(),
       );
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({required this.title});
-
-  final String title;
+  MyHomePage();
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  MyHomePageState createState() => MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePageState extends State<MyHomePage> {
   DownloadAssetsController downloadAssetsController = DownloadAssetsController();
   String message = 'Press the download button to start the download';
   bool downloaded = false;
@@ -46,70 +44,101 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(message),
-              if (downloaded) ...[
-                Container(
-                  width: 150,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: FileImage(File('${downloadAssetsController.assetsDir}/dart.jpeg')),
-                      fit: BoxFit.fitWidth,
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 150,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: FileImage(File('${downloadAssetsController.assetsDir}/flutter.png')),
-                      fit: BoxFit.fitWidth,
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-        floatingActionButton: Row(
+  Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: AppBar(title: Text('Download Assets')),
+      body: Center(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FloatingActionButton(
-              onPressed: _downloadAssets,
-              tooltip: 'Download',
-              child: Icon(Icons.arrow_downward),
+            Container(
+              height: 45,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12.0),
+                child: Stack(
+                  clipBehavior: Clip.antiAlias,
+                  children: [
+                    Container(
+                      width: screenSize.width,
+                      color: Colors.grey,
+                    ),
+                    Container(
+                      width: screenSize.width * (value / 100),
+                      color: Colors.blue,
+                    ),
+                    Center(
+                      child: Text(
+                        message,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(
-              width: 25,
-            ),
-            FloatingActionButton(
-              onPressed: () async {
-                await downloadAssetsController.clearAssets();
-                await _downloadAssets();
-              },
-              tooltip: 'Refresh',
-              child: Icon(Icons.refresh),
-            ),
-            const SizedBox(
-              width: 25,
-            ),
-            FloatingActionButton(
-              onPressed: _cancel,
-              tooltip: 'Cancel',
-              child: Icon(Icons.cancel_outlined),
-            ),
+            const SizedBox(height: 8),
+            if (downloaded) ...[
+              Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: FileImage(File('${downloadAssetsController.assetsDir}/dart.jpeg')),
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
+              ),
+              Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: FileImage(File('${downloadAssetsController.assetsDir}/flutter.png')),
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
+              ),
+            ],
           ],
-        ), // This trailing comma makes auto-formatting nicer for build methods.
-      );
+        ),
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          FloatingActionButton(
+            onPressed: _downloadAssets,
+            tooltip: 'Download',
+            child: Icon(Icons.arrow_downward),
+          ),
+          const SizedBox(
+            width: 25,
+          ),
+          FloatingActionButton(
+            onPressed: () async {
+              await downloadAssetsController.clearAssets();
+              await _downloadAssets();
+            },
+            tooltip: 'Refresh',
+            child: Icon(Icons.refresh),
+          ),
+          const SizedBox(
+            width: 25,
+          ),
+          FloatingActionButton(
+            onPressed: _cancel,
+            tooltip: 'Cancel',
+            child: Icon(Icons.cancel_outlined),
+          ),
+        ],
+      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
 
   Future _downloadAssets() async {
     final assetsDownloaded = await downloadAssetsController.assetsDirAlreadyExists();
@@ -137,10 +166,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         onProgress: (progressValue) {
           downloaded = false;
-          value = progressValue;
+          value = progressValue.clamp(0, 100);
           setState(() {
             downloaded = progressValue >= 100.0;
-            message = 'Downloading - ${progressValue.toStringAsFixed(2)}';
+            message = 'Downloading - ${progressValue.toStringAsFixed(0)}%';
             print(message);
 
             if (downloaded) {

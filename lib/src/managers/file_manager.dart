@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 
-abstract class FileManager {
+abstract interface class FileManager {
   Future<bool> directoryExists(String directory);
 
   Future<bool> fileExists(String fileDir);
@@ -14,7 +14,7 @@ abstract class FileManager {
   Future<String> getApplicationPath();
 }
 
-class FileManagerImpl implements FileManager {
+final class FileManagerImpl implements FileManager {
   @override
   Future<Directory> createDirectory(String directoryPath, {bool recursive = false}) =>
       Directory(directoryPath).create(recursive: recursive);

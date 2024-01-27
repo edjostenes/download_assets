@@ -7,17 +7,8 @@ import 'managers/file_manager.dart';
 const _threshold = 98.0;
 const _maxTotal = 100.0;
 
-DownloadAssetsController createObject({
-  required FileManager fileManager,
-  required CustomHttpClient customHttpClient,
-}) =>
-    _DownloadAssetsControllerImpl(
-      fileManager: fileManager,
-      customHttpClient: customHttpClient,
-    );
-
-abstract class DownloadAssetsController {
-  factory DownloadAssetsController() => createObject(
+abstract interface class DownloadAssetsController {
+  factory DownloadAssetsController() => _DownloadAssetsControllerImpl(
         fileManager: FileManagerImpl(),
         customHttpClient: CustomHttpClientImpl(),
       );
@@ -65,7 +56,7 @@ abstract class DownloadAssetsController {
   void cancelDownload();
 }
 
-class _DownloadAssetsControllerImpl implements DownloadAssetsController {
+final class _DownloadAssetsControllerImpl implements DownloadAssetsController {
   _DownloadAssetsControllerImpl({required this.fileManager, required this.customHttpClient});
 
   String? _assetsDir;
