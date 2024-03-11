@@ -1,13 +1,11 @@
 import 'package:path/path.dart';
+import 'package:dio/dio.dart';
 
 import 'download_assets_controller.dart';
 import 'exceptions/download_assets_exception.dart';
 import 'managers/file/file_manager.dart';
 import 'managers/http/custom_http_client.dart';
 import 'uncompress_delegate/uncompress_delegate.dart';
-
-const _threshold = 98.0;
-const _maxTotal = 100.0;
 
 DownloadAssetsController createObject({
   required FileManager fileManager,
@@ -27,6 +25,9 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   String? _assetsDir;
   final FileManager fileManager;
   final CustomHttpClient customHttpClient;
+  double minIncrement = 0.01;
+  int _totalSize = -1;
+  int _downloadedSize = 0;
 
   @override
   String? get assetsDir => _assetsDir;
@@ -35,7 +36,9 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   Future init({
     String assetDir = 'assets',
     bool useFullDirectoryPath = false,
+    double minThreshold = 0.01,
   }) async {
+    minIncrement = minThreshold;
     if (useFullDirectoryPath) {
       _assetsDir = assetDir;
       return;
@@ -47,13 +50,15 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
 
   @override
   Future<bool> assetsDirAlreadyExists() async {
-    assert(assetsDir != null, 'DownloadAssets has not been initialized. Call init method first');
+    assert(assetsDir != null,
+        'DownloadAssets has not been initialized. Call init method first');
     return await fileManager.directoryExists(_assetsDir!);
   }
 
   @override
   Future<bool> assetsFileExists(String file) async {
-    assert(assetsDir != null, 'DownloadAssets has not been initialized. Call init method first');
+    assert(assetsDir != null,
+        'DownloadAssets has not been initialized. Call init method first');
     return await fileManager.fileExists('$_assetsDir/$file');
   }
 
@@ -73,59 +78,70 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     required List<String> assetsUrls,
     List<UncompressDelegate> uncompressDelegates = const [UnzipDelegate()],
     Function(double)? onProgress,
+    Function()? onStartUnziping,
     Function()? onCancel,
+    Function()? onDone,
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},
   }) async {
-    assert(assetsDir != null, 'DownloadAssets has not been initialized. Call init method first');
+    assert(assetsDir != null,
+        'DownloadAssets has not been initialized. Call init method first');
     assert(assetsUrls.isNotEmpty, "AssetUrl param can't be empty");
 
     try {
-      var totalProgress = 0.0;
-      onProgress?.call(totalProgress);
+      onProgress?.call(0.0);
       await fileManager.createDirectory(_assetsDir!);
+      final List<({String assetUrl, String fullPath})> assets = [];
+      _downloadedSize = 0;
 
       for (final assetsUrl in assetsUrls) {
         final fileName = basename(assetsUrl);
-        final fileExtension = extension(assetsUrl);
         final fullPath = '$_assetsDir/$fileName';
-        var previousProgress = 0.0;
-        await customHttpClient.download(
-          assetsUrl,
-          fullPath,
-          onReceiveProgress: (received, total) {
-            if (total == -1) {
+        assets.add((assetUrl: assetsUrl, fullPath: fullPath));
+        final size = await customHttpClient.checkSize(assetsUrl);
+        _totalSize += size;
+      }
+
+      final List<Future<Response>> responses = [];
+      Map<String, int> downloadedBytesPerAsset = {};
+      for (final asset in assets) {
+        final response = customHttpClient.download(
+          asset.assetUrl,
+          asset.fullPath,
+          onReceiveProgress: (int received, int total) {
+            if (total == -1 || received <= 0) {
               return;
             }
 
-            final progress = (received / total) * _maxTotal;
-            final increment = progress - previousProgress;
-            totalProgress += increment;
-            previousProgress = progress;
+            int previousReceived = downloadedBytesPerAsset[asset.fullPath] ?? 0;
+            _downloadedSize += received - previousReceived;
+            downloadedBytesPerAsset[asset.fullPath] = received;
 
-            if (totalProgress >= _threshold || increment <= 0.1) {
-              return;
-            }
+            final progress = _downloadedSize / _totalSize;
 
-            onProgress?.call(totalProgress);
+            onProgress?.call(progress);
           },
           requestExtraHeaders: requestExtraHeaders,
           requestQueryParams: requestQueryParams,
         );
+        responses.add(response);
+      }
 
+      await Future.wait(responses);
+      onStartUnziping?.call();
+
+      for (final asset in assets) {
+        final fileExtension = extension(asset.assetUrl);
         for (final delegate in uncompressDelegates) {
           if (delegate.extension != fileExtension) {
             continue;
           }
-
-          await delegate.uncompress(fullPath, _assetsDir!);
+          await delegate.uncompress(asset.fullPath, _assetsDir!);
           break;
         }
       }
 
-      if (totalProgress >= _threshold) {
-        onProgress?.call(_maxTotal);
-      }
+      onDone?.call();
     } on DownloadAssetsException catch (e) {
       if (e.downloadCancelled) {
         onCancel?.call();

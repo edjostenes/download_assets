@@ -10,4 +10,6 @@ abstract class CustomHttpClient {
   });
 
   void cancel();
+
+  Future<int> checkSize(String urlPath);
 }

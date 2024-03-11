@@ -49,5 +49,10 @@ class CustomHttpClientImpl implements CustomHttpClient {
   }
 
   @override
+  Future<int> checkSize(String urlPath) => Dio().head(urlPath).then((response) {
+        return int.parse(response.headers.value('content-length') ?? '0');
+      });
+
+  @override
   void cancel() => _cancelToken?.cancel();
 }
