@@ -51,6 +51,9 @@ await downloadAssetsController.startDownload(
     onProgress: (progressValue) {
         //TODO: Implement progress here
     },
+    onDone: () {
+      //TODO: Implement progress here
+    }
 );
 ```
 
