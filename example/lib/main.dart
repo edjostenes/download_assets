@@ -29,8 +29,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  DownloadAssetsController downloadAssetsController =
-      DownloadAssetsController();
+  DownloadAssetsController downloadAssetsController = DownloadAssetsController();
   String message = 'Press the download button to start the download';
   bool downloaded = false;
   double value = 0.0;
@@ -62,8 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: 150,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: FileImage(File(
-                          '${downloadAssetsController.assetsDir}/dart.jpeg')),
+                      image: FileImage(File('${downloadAssetsController.assetsDir}/dart.jpeg')),
                       fit: BoxFit.fitWidth,
                     ),
                   ),
@@ -73,8 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: 150,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: FileImage(File(
-                          '${downloadAssetsController.assetsDir}/flutter.png')),
+                      image: FileImage(File('${downloadAssetsController.assetsDir}/flutter.png')),
                       fit: BoxFit.fitWidth,
                     ),
                   ),
@@ -115,8 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 
   Future _downloadAssets() async {
-    final assetsDownloaded =
-        await downloadAssetsController.assetsDirAlreadyExists();
+    final assetsDownloaded = await downloadAssetsController.assetsDirAlreadyExists();
 
     if (assetsDownloaded) {
       setState(() {
@@ -128,32 +124,31 @@ class _MyHomePageState extends State<MyHomePage> {
 
     try {
       value = 0.0;
+      downloaded = false;
       await downloadAssetsController.startDownload(
-        onCancel: () {
-          message = 'Cancelled by user';
-          setState(() {});
-        },
-        assetsUrls: [
-          'https://github.com/edjostenes/download_assets/raw/main/download/image_1.png',
-          'https://github.com/edjostenes/download_assets/raw/main/download/assets.zip',
-          'https://github.com/edjostenes/download_assets/raw/main/download/image_2.png',
-          'https://github.com/edjostenes/download_assets/raw/main/download/image_3.png',
-        ],
-        onProgress: (progressValue) {
-          downloaded = false;
-          value = progressValue;
-          setState(() {
-            downloaded = progressValue >= 100.0;
-            message = 'Downloading - ${progressValue.toStringAsFixed(2)}';
-            print(message);
-
-            if (downloaded) {
-              message =
-                  'Download completed\nClick in refresh button to force download';
-            }
+          onCancel: () {
+            message = 'Cancelled by user';
+            setState(() {});
+          },
+          assetsUrls: [
+            'https://github.com/edjostenes/download_assets/raw/main/download/image_1.png',
+            'https://github.com/edjostenes/download_assets/raw/main/download/assets.zip',
+            'https://github.com/edjostenes/download_assets/raw/main/download/image_2.png',
+            'https://github.com/edjostenes/download_assets/raw/main/download/image_3.png',
+          ],
+          onProgress: (progressValue) {
+            value = progressValue * 100;
+            setState(() {
+              message = 'Downloading - ${progressValue.toStringAsFixed(2)}';
+              print(message);
+            });
+          },
+          onDone: () {
+            setState(() {
+              downloaded = true;
+              message = 'Download completed\nClick in refresh button to force download';
+            });
           });
-        },
-      );
     } on DownloadAssetsException catch (e) {
       print(e.toString());
       setState(() {

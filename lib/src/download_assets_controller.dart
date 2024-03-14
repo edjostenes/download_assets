@@ -15,10 +15,9 @@ abstract class DownloadAssetsController {
   Future init({
     String assetDir = 'assets',
     bool useFullDirectoryPath = false,
-    double minThreshold = 0.01,
   });
 
-  ///Directory that keeps all assets
+  /// Directory that keeps all assets
   String? get assetsDir;
 
   /// If assets directory was already created it assumes that the content was already downloaded.
@@ -36,7 +35,10 @@ abstract class DownloadAssetsController {
   /// [assetsUrls] -> A list of URLs representing each file to be downloaded. (http://{YOUR_DOMAIN}:{FILE_NAME}.{EXTENSION})
   /// [uncompressDelegates] -> An optional list of [UncompressDelegate] objects responsible for handling asset decompression, if needed.
   /// If the [uncompressDelegates] list is empty, the [UnzipDelegate] class is automatically added as a delegate for ZIP file decompression.
-  /// [onProgress] -> It's not required. Called after each iteration returning the current progress
+  /// [onStartUnziping] -> Called right before the start of the uncompressing process.
+  /// [onProgress] -> It's not required. Called after each iteration returning the current progress.
+  /// The parameter `value` of type double ranges from 0 to 1, where 1 indicates the completion of the download process.
+  /// [onDone] -> Called when all files have been downloaded and uncompressed.
   /// [onCancel] -> Cancel the download (optional)
   /// [requestQueryParams] -> Query params to be used in the request (optional)
   /// [requestExtraHeaders] -> Extra headers to be added in the request (optional)

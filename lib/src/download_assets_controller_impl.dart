@@ -1,5 +1,4 @@
 import 'package:path/path.dart';
-import 'package:dio/dio.dart';
 
 import 'download_assets_controller.dart';
 import 'exceptions/download_assets_exception.dart';
@@ -25,9 +24,6 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   String? _assetsDir;
   final FileManager fileManager;
   final CustomHttpClient customHttpClient;
-  double minIncrement = 0.01;
-  int _totalSize = -1;
-  int _downloadedSize = 0;
 
   @override
   String? get assetsDir => _assetsDir;
@@ -36,9 +32,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   Future init({
     String assetDir = 'assets',
     bool useFullDirectoryPath = false,
-    double minThreshold = 0.01,
   }) async {
-    minIncrement = minThreshold;
     if (useFullDirectoryPath) {
       _assetsDir = assetDir;
       return;
@@ -50,15 +44,13 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
 
   @override
   Future<bool> assetsDirAlreadyExists() async {
-    assert(assetsDir != null,
-        'DownloadAssets has not been initialized. Call init method first');
+    assert(assetsDir != null, 'DownloadAssets has not been initialized. Call init method first');
     return await fileManager.directoryExists(_assetsDir!);
   }
 
   @override
   Future<bool> assetsFileExists(String file) async {
-    assert(assetsDir != null,
-        'DownloadAssets has not been initialized. Call init method first');
+    assert(assetsDir != null, 'DownloadAssets has not been initialized. Call init method first');
     return await fileManager.fileExists('$_assetsDir/$file');
   }
 
@@ -84,28 +76,28 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},
   }) async {
-    assert(assetsDir != null,
-        'DownloadAssets has not been initialized. Call init method first');
+    assert(assetsDir != null, 'DownloadAssets has not been initialized. Call init method first');
     assert(assetsUrls.isNotEmpty, "AssetUrl param can't be empty");
 
     try {
       onProgress?.call(0.0);
       await fileManager.createDirectory(_assetsDir!);
-      final List<({String assetUrl, String fullPath})> assets = [];
-      _downloadedSize = 0;
+      var totalSize = -1;
+      var downloadedSize = 0;
+      final assets = <({String assetUrl, String fullPath})>[];
 
       for (final assetsUrl in assetsUrls) {
         final fileName = basename(assetsUrl);
         final fullPath = '$_assetsDir/$fileName';
         assets.add((assetUrl: assetsUrl, fullPath: fullPath));
         final size = await customHttpClient.checkSize(assetsUrl);
-        _totalSize += size;
+        totalSize += size;
       }
 
-      final List<Future<Response>> responses = [];
-      Map<String, int> downloadedBytesPerAsset = {};
+      final downloadedBytesPerAsset = <String, int>{};
+
       for (final asset in assets) {
-        final response = customHttpClient.download(
+        await customHttpClient.download(
           asset.assetUrl,
           asset.fullPath,
           onReceiveProgress: (int received, int total) {
@@ -113,29 +105,27 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
               return;
             }
 
-            int previousReceived = downloadedBytesPerAsset[asset.fullPath] ?? 0;
-            _downloadedSize += received - previousReceived;
+            final previousReceived = downloadedBytesPerAsset[asset.fullPath] ?? 0;
+            downloadedSize += received - previousReceived;
             downloadedBytesPerAsset[asset.fullPath] = received;
-
-            final progress = _downloadedSize / _totalSize;
-
+            final progress = downloadedSize / totalSize * 100;
             onProgress?.call(progress);
           },
           requestExtraHeaders: requestExtraHeaders,
           requestQueryParams: requestQueryParams,
         );
-        responses.add(response);
       }
 
-      await Future.wait(responses);
       onStartUnziping?.call();
 
       for (final asset in assets) {
         final fileExtension = extension(asset.assetUrl);
+
         for (final delegate in uncompressDelegates) {
           if (delegate.extension != fileExtension) {
             continue;
           }
+
           await delegate.uncompress(asset.fullPath, _assetsDir!);
           break;
         }
