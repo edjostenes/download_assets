@@ -108,7 +108,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
             final previousReceived = downloadedBytesPerAsset[asset.fullPath] ?? 0;
             downloadedSize += received - previousReceived;
             downloadedBytesPerAsset[asset.fullPath] = received;
-            final progress = downloadedSize / totalSize * 100;
+            final progress = downloadedSize / totalSize;
             onProgress?.call(progress);
           },
           requestExtraHeaders: requestExtraHeaders,

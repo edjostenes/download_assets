@@ -8,6 +8,10 @@ The download_assets package is a powerful library that facilitates the process o
 into the application. With this library, you can easily download files, images, videos, and other
 resources in your app, providing a smooth and efficient user experience.
 
+<p align="center">
+  <img src="https://media.giphy.com/media/SYDVx5BJFGrnSaPBtQ/giphy.gif">
+</p>
+
 ## Features
 
 ### *init*
@@ -26,8 +30,10 @@ Starts the asset download process.
 * *assetsUrls*: A list of URLs representing each file to be downloaded.
 * *uncompressDelegates*: A list of custom decompression delegates for different types of file, such
   as ZIP, RAR, etc (optional).
-* *onProgress*: Optional callback function that provides download progress information.
-* *onCancel*: Cancels the ongoing download.
+* *onStartUnziping*: Called right before the start of the uncompressing process (optional).
+* *onProgress*: It's not required. Called after each iteration returning the current progress (optional). The double parameter ranges from 0 to 1, where 1 indicates the completion of the download process.
+* *onDone*: Called when all files have been downloaded and uncompressed (optional).
+* *onCancel*: Cancels the ongoing download (optional).
 * *requestQueryParams*: Query params to be used in the request (optional).
 * *requestExtraHeaders*: Extra headers to be added in the request (optional).
 

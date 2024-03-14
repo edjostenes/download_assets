@@ -10,6 +10,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Download Assets Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
@@ -54,7 +55,6 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(message),
               if (downloaded) ...[
                 Container(
                   width: 150,
@@ -77,6 +77,22 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ],
+              TweenAnimationBuilder<double>(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeInOut,
+                tween: Tween<double>(
+                  begin: 0,
+                  end: value,
+                ),
+                builder: (context, value, _) => LinearProgressIndicator(
+                  minHeight: 10,
+                  value: value,
+                ),
+              ),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
         ),
@@ -137,9 +153,9 @@ class _MyHomePageState extends State<MyHomePage> {
             'https://github.com/edjostenes/download_assets/raw/main/download/image_3.png',
           ],
           onProgress: (progressValue) {
-            value = progressValue * 100;
+            value = progressValue;
             setState(() {
-              message = 'Downloading - ${progressValue.toStringAsFixed(2)}';
+              message = 'Downloading - ${(progressValue * 100).toStringAsFixed(2)}';
               print(message);
             });
           },
