@@ -1,6 +1,6 @@
 ## 3.2.0 - March 14, 2024
 * Added new callbacks (onStartUnziping and onDone) on startDownload method
-* The double parameter, in the *onProgress* callback, ranges from 0 to 1, where 1 indicates the completion of the download process
+* **[BREAKING CHANGE]** The double parameter, in the *onProgress* callback, ranges from 0 to 1, where 1 indicates the completion of the download process
 
 ## 3.1.1 - July 12, 2023
 
