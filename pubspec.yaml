@@ -4,7 +4,7 @@ version: 3.1.1
 homepage: https://github.com/edjostenes/download_assets
 
 environment:
-  sdk: '>=2.23.1 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:

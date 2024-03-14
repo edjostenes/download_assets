@@ -15,6 +15,7 @@ abstract class DownloadAssetsController {
   Future init({
     String assetDir = 'assets',
     bool useFullDirectoryPath = false,
+    double minThreshold = 0.01,
   });
 
   ///Directory that keeps all assets
@@ -43,7 +44,9 @@ abstract class DownloadAssetsController {
     required List<String> assetsUrls,
     List<UncompressDelegate> uncompressDelegates = const [UnzipDelegate()],
     Function(double)? onProgress,
+    Function()? onStartUnziping,
     Function()? onCancel,
+    Function()? onDone,
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},
   });
