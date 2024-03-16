@@ -33,7 +33,6 @@ void main() {
       fileManager: fileManager,
       customHttpClient: customHttpClient,
     );
-    registerFallbackValue(unzipDelegate);
   });
 
   group('init', () {
