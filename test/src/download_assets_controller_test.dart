@@ -206,6 +206,13 @@ void main() {
       'https://github.com/edjostenes/download_assets/raw/main/download/image_2.png',
       'https://github.com/edjostenes/download_assets/raw/main/download/image_3.png',
     ];
+    Future<Response> customHttpClientDownload() => customHttpClient.download(
+          any(),
+          any(),
+          onReceiveProgress: any(named: 'onReceiveProgress'),
+          requestExtraHeaders: any(named: 'requestExtraHeaders'),
+          requestQueryParams: any(named: 'requestQueryParams'),
+        );
 
     setUp(
       () async {
@@ -219,17 +226,8 @@ void main() {
         // given
         when(() => fileManager.createDirectory(any())).thenAnswer((invocation) async => Directory(''));
         when(() => customHttpClient.checkSize(any())).thenAnswer((invocation) async => 0);
-        when(
-          () => customHttpClient.download(
-            any(),
-            any(),
-            onReceiveProgress: any(named: 'onReceiveProgress'),
-            requestExtraHeaders: any(named: 'requestExtraHeaders'),
-            requestQueryParams: any(named: 'requestQueryParams'),
-          ),
-        ).thenAnswer(
-          (invocation) async => Response(requestOptions: RequestOptions()),
-        );
+        when(() => customHttpClientDownload())
+            .thenAnswer((invocation) async => Response(requestOptions: RequestOptions()));
 
         // when
         await downloadAssetsController.startDownload(
@@ -243,15 +241,7 @@ void main() {
         // then
         verify(() => fileManager.createDirectory(any())).called(1);
         verify(() => customHttpClient.checkSize(any())).called(4);
-        verify(
-          () => customHttpClient.download(
-            any(),
-            any(),
-            onReceiveProgress: any(named: 'onReceiveProgress'),
-            requestExtraHeaders: any(named: 'requestExtraHeaders'),
-            requestQueryParams: any(named: 'requestQueryParams'),
-          ),
-        ).called(4);
+        verify(() => customHttpClientDownload()).called(4);
         verifyNoMoreInteractions(customHttpClient);
         verifyNoMoreInteractions(fileManager);
       },
@@ -265,15 +255,7 @@ void main() {
         // given
         when(() => fileManager.createDirectory(any())).thenAnswer((invocation) async => Directory(''));
         when(() => customHttpClient.checkSize(any())).thenAnswer((invocation) async => 0);
-        when(
-          () => customHttpClient.download(
-            any(),
-            any(),
-            onReceiveProgress: any(named: 'onReceiveProgress'),
-            requestExtraHeaders: any(named: 'requestExtraHeaders'),
-            requestQueryParams: any(named: 'requestQueryParams'),
-          ),
-        ).thenThrow(dioException);
+        when(() => customHttpClientDownload()).thenThrow(dioException);
 
         // then
         await expectLater(
@@ -287,15 +269,7 @@ void main() {
         );
         verify(() => fileManager.createDirectory(any())).called(1);
         verify(() => customHttpClient.checkSize(any())).called(4);
-        verify(
-          () => customHttpClient.download(
-            any(),
-            any(),
-            onReceiveProgress: any(named: 'onReceiveProgress'),
-            requestExtraHeaders: any(named: 'requestExtraHeaders'),
-            requestQueryParams: any(named: 'requestQueryParams'),
-          ),
-        ).called(1);
+        verify(() => customHttpClientDownload()).called(1);
         verifyNoMoreInteractions(customHttpClient);
         verifyNoMoreInteractions(fileManager);
       },
