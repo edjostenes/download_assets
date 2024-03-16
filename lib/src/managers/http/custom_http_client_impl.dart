@@ -30,7 +30,7 @@ class CustomHttpClientImpl implements CustomHttpClient {
         cancelToken: _cancelToken,
         queryParameters: requestQueryParams,
         options: Options(
-          headers: requestExtraHeaders,
+          headers: headers,
           responseType: ResponseType.bytes,
         ),
         onReceiveProgress: onReceiveProgress,

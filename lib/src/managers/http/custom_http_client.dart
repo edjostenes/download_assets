@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-abstract class CustomHttpClient {
+abstract interface class CustomHttpClient {
   Future<Response> download(
     String urlPath,
     String savePath, {
