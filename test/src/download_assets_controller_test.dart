@@ -260,11 +260,12 @@ void main() {
         // then
         await expectLater(
           () => downloadAssetsController.startDownload(
-              uncompressDelegates: [unzipDelegate],
-              onCancel: () {},
-              assetsUrls: assetsUrls,
-              onProgress: (progressValue) {},
-              onDone: () {}),
+            uncompressDelegates: [unzipDelegate],
+            onCancel: () {},
+            assetsUrls: assetsUrls,
+            onProgress: (progressValue) {},
+            onDone: () {},
+          ),
           throwsA(isA<DownloadAssetsException>()),
         );
         verify(() => fileManager.createDirectory(any())).called(1);
