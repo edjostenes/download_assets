@@ -82,7 +82,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     try {
       onProgress?.call(0.0);
       await fileManager.createDirectory(_assetsDir!);
-      var totalSize = 0;
+      var totalSize = -1;
       var downloadedSize = 0;
       final assets = <({String assetUrl, String fullPath, String extenstion})>[];
 
@@ -111,7 +111,6 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
 
             final previousReceived = downloadedBytesPerAsset[asset.fullPath] ?? 0;
             downloadedSize += received - previousReceived;
-            downloadedSize = downloadedSize.clamp(0, totalSize);
             downloadedBytesPerAsset[asset.fullPath] = received;
             final progress = downloadedSize / totalSize;
             onProgress?.call(progress);
