@@ -65,12 +65,10 @@ You can now specify the file name and extension with the AssetUrl class in case 
 class AssetUrl {
   final String url;
   final String? fileName;
-  final String? extenstion;
 
   AssetUrl({
     required this.url,
     this.fileName,
-    this.extenstion,
   });
 }
 ```
