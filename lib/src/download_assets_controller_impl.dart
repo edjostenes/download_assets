@@ -67,7 +67,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
 
   @override
   Future startDownload({
-    required List<String> assetsUrls,
+    required List<AssetUrl> assetsUrls,
     List<UncompressDelegate> uncompressDelegates = const [UnzipDelegate()],
     Function(double)? onProgress,
     Function()? onStartUnziping,
@@ -82,15 +82,19 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     try {
       onProgress?.call(0.0);
       await fileManager.createDirectory(_assetsDir!);
-      var totalSize = -1;
+      var totalSize = 0;
       var downloadedSize = 0;
-      final assets = <({String assetUrl, String fullPath})>[];
+      final assets = <({String assetUrl, String fullPath, String extenstion})>[];
 
-      for (final assetsUrl in assetsUrls) {
-        final fileName = basename(assetsUrl);
+      for (final assetUrl in assetsUrls) {
+        final fileName = assetUrl.fileName ?? basename(assetUrl.url);
         final fullPath = '$_assetsDir/$fileName';
-        assets.add((assetUrl: assetsUrl, fullPath: fullPath));
-        final size = await customHttpClient.checkSize(assetsUrl);
+        assets.add((
+          assetUrl: assetUrl.url,
+          fullPath: fullPath,
+          extenstion: extension(assetUrl.fileName ?? assetUrl.url),
+        ));
+        final size = await customHttpClient.checkSize(assetUrl.url);
         totalSize += size;
       }
 
@@ -107,6 +111,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
 
             final previousReceived = downloadedBytesPerAsset[asset.fullPath] ?? 0;
             downloadedSize += received - previousReceived;
+            downloadedSize = downloadedSize.clamp(0, totalSize);
             downloadedBytesPerAsset[asset.fullPath] = received;
             final progress = downloadedSize / totalSize;
             onProgress?.call(progress);
@@ -119,7 +124,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
       onStartUnziping?.call();
 
       for (final asset in assets) {
-        final fileExtension = extension(asset.assetUrl);
+        final fileExtension = asset.extenstion;
 
         for (final delegate in uncompressDelegates) {
           if (delegate.extension != fileExtension) {

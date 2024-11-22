@@ -200,10 +200,16 @@ void main() {
 
   group('startDownload', () {
     final assetsUrls = [
-      'https://github.com/edjostenes/download_assets/raw/main/download/image_1.png',
-      'https://github.com/edjostenes/download_assets/raw/main/download/assets.zip',
-      'https://github.com/edjostenes/download_assets/raw/main/download/image_2.png',
-      'https://github.com/edjostenes/download_assets/raw/main/download/image_3.png',
+      AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/image_1.png'),
+      AssetUrl(
+        url: 'https://github.com/edjostenes/download_assets/raw/main/download/assets.zip',
+      ),
+      AssetUrl(
+        url: 'http://bit.ly/3AUO9Pc',
+        fileName: 'assets_1.zip',
+      ), // same file as above
+      AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/image_2.png'),
+      AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/image_3.png'),
     ];
     Future<Response> customHttpClientDownload() => customHttpClient.download(
           any(),
@@ -239,8 +245,8 @@ void main() {
 
         // then
         verify(() => fileManager.createDirectory(any())).called(1);
-        verify(() => customHttpClient.checkSize(any())).called(4);
-        verify(() => customHttpClientDownload()).called(4);
+        verify(() => customHttpClient.checkSize(any())).called(5);
+        verify(() => customHttpClientDownload()).called(5);
         verifyNoMoreInteractions(customHttpClient);
         verifyNoMoreInteractions(fileManager);
       },
@@ -268,7 +274,7 @@ void main() {
           throwsA(isA<DownloadAssetsException>()),
         );
         verify(() => fileManager.createDirectory(any())).called(1);
-        verify(() => customHttpClient.checkSize(any())).called(4);
+        verify(() => customHttpClient.checkSize(any())).called(5);
         verify(() => customHttpClientDownload()).called(1);
         verifyNoMoreInteractions(customHttpClient);
         verifyNoMoreInteractions(fileManager);

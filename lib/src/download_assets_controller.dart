@@ -3,6 +3,13 @@ import 'managers/file/file_manager_impl.dart';
 import 'managers/http/custom_http_client_impl.dart';
 import 'uncompress_delegate/uncompress_delegate.dart';
 
+class AssetUrl {
+  const AssetUrl({required this.url, this.fileName});
+
+  final String url;
+  final String? fileName;
+}
+
 abstract class DownloadAssetsController {
   factory DownloadAssetsController() => createObject(
         fileManager: FileManagerImpl(),
@@ -43,7 +50,7 @@ abstract class DownloadAssetsController {
   /// [requestQueryParams] -> Query params to be used in the request (optional)
   /// [requestExtraHeaders] -> Extra headers to be added in the request (optional)
   Future startDownload({
-    required List<String> assetsUrls,
+    required List<AssetUrl> assetsUrls,
     List<UncompressDelegate> uncompressDelegates = const [UnzipDelegate()],
     Function(double)? onProgress,
     Function()? onStartUnziping,
