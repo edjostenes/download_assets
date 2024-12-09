@@ -49,6 +49,7 @@ abstract class DownloadAssetsController {
   /// [onCancel] -> Cancel the download (optional)
   /// [requestQueryParams] -> Query params to be used in the request (optional)
   /// [requestExtraHeaders] -> Extra headers to be added in the request (optional)
+  /// [checkSize] -> Speicifies if the size of the file should be checked first before starting download
   Future startDownload({
     required List<AssetUrl> assetsUrls,
     List<UncompressDelegate> uncompressDelegates = const [UnzipDelegate()],
@@ -58,6 +59,7 @@ abstract class DownloadAssetsController {
     Function()? onDone,
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},
+    bool? checkSize = true,
   });
 
   /// Cancel the download

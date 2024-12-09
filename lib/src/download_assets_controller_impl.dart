@@ -75,6 +75,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     Function()? onDone,
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},
+    bool? checkSize = true,
   }) async {
     assert(assetsDir != null, 'DownloadAssets has not been initialized. Call init method first');
     assert(assetsUrls.isNotEmpty, "AssetUrl param can't be empty");
@@ -94,8 +95,10 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
           fullPath: fullPath,
           extenstion: extension(assetUrl.fileName ?? assetUrl.url),
         ));
-        final size = await customHttpClient.checkSize(assetUrl.url);
-        totalSize += size;
+
+        if (checkSize == true) {
+          totalSize += await customHttpClient.checkSize(assetUrl.url);
+        }
       }
 
       final downloadedBytesPerAsset = <String, int>{};
