@@ -1,20 +1,18 @@
 name: download_assets
 description: Download and uncompress assets
-version: 1.0.4
+version: 1.0.6
 homepage: https://github.com/edjostenes/download_assets
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.14.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  dio: ^4.0.0
-  path_provider: ^2.0.1
-  archive: ^3.1.2
+  dio: ^5.7.0
+  path_provider: ^2.1.5
+  archive: ^4.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-flutter:

@@ -44,7 +44,7 @@ class DownloadAssetsController {
     Function? onComplete,
   }) async {
     try {
-      if (assetsUrl == null || assetsUrl.isEmpty)
+      if (assetsUrl.isEmpty)
         throw DownloadAssetsException("AssetUrl param can't be empty");
 
       await clearAssets();
