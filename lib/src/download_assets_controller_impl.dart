@@ -108,9 +108,9 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
           asset.assetUrl,
           asset.fullPath,
           onReceiveProgress: (int received, int total) {
-            if (total == -1 || received <= 0) {
+            /*if (total == -1 || received <= 0) {
               return;
-            }
+            }*/
 
             final previousReceived = downloadedBytesPerAsset[asset.fullPath] ?? 0;
             downloadedSize += received - previousReceived;
