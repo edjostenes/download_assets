@@ -19,7 +19,7 @@ resources in your app, providing a smooth and efficient user experience.
 Init method for setting up the assetsDir, which is required to be called during app
 initialization.
 
-```
+```dart
 await downloadAssetsController.init();
 ```
 
@@ -27,7 +27,7 @@ await downloadAssetsController.init();
 
 Starts the asset download process.
 
-* *assetsUrls*: A list of URLs representing each file to be downloaded.
+* *assetsUrls*: A list of [AssetUrl] objects representing each file to be downloaded.
 * *uncompressDelegates*: A list of custom decompression delegates for different types of file, such
   as ZIP, RAR, etc (optional).
 * *onStartUnziping*: Called right before the start of the uncompressing process (optional).
@@ -37,16 +37,16 @@ Starts the asset download process.
 * *requestQueryParams*: Query params to be used in the request (optional).
 * *requestExtraHeaders*: Extra headers to be added in the request (optional).
 
-```
+```dart
 await downloadAssetsController.startDownload(
     onCancel: () {
         //TODO: implement cancel here
     },
     assetsUrls: [
-      'https://github.com/edjostenes/download_assets/raw/main/download/image_1.png',
-      'https://github.com/edjostenes/download_assets/raw/main/download/assets.zip',
-      'https://github.com/edjostenes/download_assets/raw/main/download/image_2.png',
-      'https://github.com/edjostenes/download_assets/raw/main/download/image_3.png',
+      AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/image_1.png'),
+      AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/assets.zip'),
+      AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/image_2.png'),
+      AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/image_3.png'),
     ],
     onProgress: (progressValue) {
         //TODO: Implement progress here
@@ -57,11 +57,27 @@ await downloadAssetsController.startDownload(
 );
 ```
 
+### *AssetUrl*
+
+You can now specify the file name and extension with the AssetUrl class in case you don't have control over the URL format.
+
+```dart
+class AssetUrl {
+  final String url;
+  final String? fileName;
+
+  AssetUrl({
+    required this.url,
+    this.fileName,
+  });
+}
+```
+
 ### *clearAssets*
 
 Remove all downloaded assets from local storage.
 
-```
+```dart
 await downloadAssetsController.clearAssets();
 ```
 
@@ -69,7 +85,7 @@ await downloadAssetsController.clearAssets();
 
 Path to the files.
 
-```
+```dart
 File('${downloadAssetsController.assetsDir}/<file_name>.<file_extension>');
 ```
 
@@ -77,7 +93,7 @@ File('${downloadAssetsController.assetsDir}/<file_name>.<file_extension>');
 
 Returns **true** if the **assetsDir** path exists.
 
-```
+```dart
 return await downloadAssetsController.assetsDirAlreadyExists();
 ```
 
@@ -85,7 +101,7 @@ return await downloadAssetsController.assetsDirAlreadyExists();
 
 Return **true** if the file exists.
 
-```
+```dart
 return await downloadAssetsController.assetsFileExists(<file_name>);
 ```
 
@@ -97,7 +113,7 @@ multiple file formats during the download.
 
 To implement your own uncompression delegate, you should implement the interface below.
 
-```
+```dart
 /// Abstract class representing a delegate for asset decompression.
 abstract class UncompressDelegate {
   const UncompressDelegate();

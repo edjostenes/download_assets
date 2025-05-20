@@ -67,7 +67,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
 
   @override
   Future startDownload({
-    required List<String> assetsUrls,
+    required List<AssetUrl> assetsUrls,
     List<UncompressDelegate> uncompressDelegates = const [UnzipDelegate()],
     Function(double)? onProgress,
     Function()? onStartUnziping,
@@ -75,6 +75,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     Function()? onDone,
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},
+    bool? checkSize = true,
   }) async {
     assert(assetsDir != null, 'DownloadAssets has not been initialized. Call init method first');
     assert(assetsUrls.isNotEmpty, "AssetUrl param can't be empty");
@@ -84,14 +85,20 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
       await fileManager.createDirectory(_assetsDir!);
       var totalSize = -1;
       var downloadedSize = 0;
-      final assets = <({String assetUrl, String fullPath})>[];
+      final assets = <({String assetUrl, String fullPath, String extenstion})>[];
 
-      for (final assetsUrl in assetsUrls) {
-        final fileName = basename(assetsUrl);
+      for (final assetUrl in assetsUrls) {
+        final fileName = assetUrl.fileName ?? basename(assetUrl.url);
         final fullPath = '$_assetsDir/$fileName';
-        assets.add((assetUrl: assetsUrl, fullPath: fullPath));
-        final size = await customHttpClient.checkSize(assetsUrl);
-        totalSize += size;
+        assets.add((
+          assetUrl: assetUrl.url,
+          fullPath: fullPath,
+          extenstion: extension(assetUrl.fileName ?? assetUrl.url),
+        ));
+
+        if (checkSize == true) {
+          totalSize += await customHttpClient.checkSize(assetUrl.url);
+        }
       }
 
       final downloadedBytesPerAsset = <String, int>{};
@@ -101,9 +108,9 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
           asset.assetUrl,
           asset.fullPath,
           onReceiveProgress: (int received, int total) {
-            if (total == -1 || received <= 0) {
+            /*if (total == -1 || received <= 0) {
               return;
-            }
+            }*/
 
             final previousReceived = downloadedBytesPerAsset[asset.fullPath] ?? 0;
             downloadedSize += received - previousReceived;
@@ -119,7 +126,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
       onStartUnziping?.call();
 
       for (final asset in assets) {
-        final fileExtension = extension(asset.assetUrl);
+        final fileExtension = asset.extenstion;
 
         for (final delegate in uncompressDelegates) {
           if (delegate.extension != fileExtension) {
