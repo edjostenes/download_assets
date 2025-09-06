@@ -4,12 +4,12 @@ version: 4.0.0
 homepage: https://github.com/edjostenes/download_assets
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.5.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  dio: ^5.8.0+1
+  dio: ^5.9.0
   path: ^1.9.1
   archive: ^4.0.7
   path_provider: ^2.1.5

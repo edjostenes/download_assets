@@ -17,6 +17,9 @@ analyzer:
     unnecessary_null_comparison: warning
     invalid_annotation: ignore
 
+formatter:
+  page_width: 120
+
 linter:
   rules:
     - lines_longer_than_80_chars: false
