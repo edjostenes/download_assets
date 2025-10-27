@@ -49,8 +49,8 @@ android {
 
     defaultConfig {
         applicationId "com.example.exampledownloadassets"
-        minSdkVersion 21
-        targetSdkVersion 35
+        minSdkVersion localProperties.getProperty('flutter.minSdkVersion').toInteger()
+        targetSdkVersion localProperties.getProperty('flutter.targetSdkVersion').toInteger()
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
