@@ -1,6 +1,6 @@
 name: download_assets
 description: Retrieve assets and add them to the application's repository for use.
-version: 4.0.0
+version: 4.0.1
 homepage: https://github.com/edjostenes/download_assets
 
 environment:
@@ -16,6 +16,6 @@ dependencies:
 
 dev_dependencies:
   mocktail: ^1.0.4
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0

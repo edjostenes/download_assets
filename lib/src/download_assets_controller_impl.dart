@@ -6,20 +6,11 @@ import 'managers/file/file_manager.dart';
 import 'managers/http/custom_http_client.dart';
 import 'uncompress_delegate/uncompress_delegate.dart';
 
-DownloadAssetsController createObject({
-  required FileManager fileManager,
-  required CustomHttpClient customHttpClient,
-}) =>
-    DownloadAssetsControllerImpl(
-      fileManager: fileManager,
-      customHttpClient: customHttpClient,
-    );
+DownloadAssetsController createObject({required FileManager fileManager, required CustomHttpClient customHttpClient}) =>
+    DownloadAssetsControllerImpl(fileManager: fileManager, customHttpClient: customHttpClient);
 
 class DownloadAssetsControllerImpl implements DownloadAssetsController {
-  DownloadAssetsControllerImpl({
-    required this.fileManager,
-    required this.customHttpClient,
-  });
+  DownloadAssetsControllerImpl({required this.fileManager, required this.customHttpClient});
 
   String? _assetsDir;
   final FileManager fileManager;
@@ -29,10 +20,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   String? get assetsDir => _assetsDir;
 
   @override
-  Future init({
-    String assetDir = 'assets',
-    bool useFullDirectoryPath = false,
-  }) async {
+  Future init({String assetDir = 'assets', bool useFullDirectoryPath = false}) async {
     if (useFullDirectoryPath) {
       _assetsDir = assetDir;
       return;
@@ -75,7 +63,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     Function()? onDone,
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},
-    bool? checkSize = true,
+    bool checkSize = true,
   }) async {
     assert(assetsDir != null, 'DownloadAssets has not been initialized. Call init method first');
     assert(assetsUrls.isNotEmpty, "AssetUrl param can't be empty");
@@ -85,18 +73,14 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
       await fileManager.createDirectory(_assetsDir!);
       var totalSize = -1;
       var downloadedSize = 0;
-      final assets = <({String assetUrl, String fullPath, String extenstion})>[];
+      final assets = <({String assetUrl, String fullPath, String extension})>[];
 
       for (final assetUrl in assetsUrls) {
         final fileName = assetUrl.fileName ?? basename(assetUrl.url);
         final fullPath = '$_assetsDir/$fileName';
-        assets.add((
-          assetUrl: assetUrl.url,
-          fullPath: fullPath,
-          extenstion: extension(assetUrl.fileName ?? assetUrl.url),
-        ));
+        assets.add((assetUrl: assetUrl.url, fullPath: fullPath, extension: extension(fileName)));
 
-        if (checkSize == true) {
+        if (checkSize) {
           totalSize += await customHttpClient.checkSize(assetUrl.url);
         }
       }
@@ -108,6 +92,10 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
           asset.assetUrl,
           asset.fullPath,
           onReceiveProgress: (int received, int total) {
+            if (!checkSize) {
+              return;
+            }
+
             final previousReceived = downloadedBytesPerAsset[asset.fullPath] ?? 0;
             downloadedSize += received - previousReceived;
             downloadedBytesPerAsset[asset.fullPath] = received;
@@ -122,7 +110,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
       onStartUnziping?.call();
 
       for (final asset in assets) {
-        final fileExtension = asset.extenstion;
+        final fileExtension = asset.extension;
 
         for (final delegate in uncompressDelegates) {
           if (delegate.extension != fileExtension) {

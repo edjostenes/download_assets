@@ -199,7 +199,7 @@ void main() {
   });
 
   group('startDownload', () {
-    final assetsUrls = [
+    const assetsUrls = [
       AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/image_1.png'),
       AssetUrl(
         url: 'https://github.com/edjostenes/download_assets/raw/main/download/assets.zip',

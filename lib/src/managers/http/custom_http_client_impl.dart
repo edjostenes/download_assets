@@ -29,19 +29,12 @@ class CustomHttpClientImpl implements CustomHttpClient {
         savePath,
         cancelToken: _cancelToken,
         queryParameters: requestQueryParams,
-        options: Options(
-          headers: headers,
-          responseType: ResponseType.bytes,
-        ),
+        options: Options(headers: headers, responseType: ResponseType.bytes),
         onReceiveProgress: onReceiveProgress,
       );
     } on DioException catch (e) {
       if (e.type == DioExceptionType.cancel) {
-        throw DownloadAssetsException(
-          e.toString(),
-          exception: e,
-          downloadCancelled: true,
-        );
+        throw DownloadAssetsException(e.toString(), exception: e, downloadCancelled: true);
       }
 
       rethrow;

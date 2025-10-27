@@ -59,7 +59,7 @@ abstract class DownloadAssetsController {
     Function()? onDone,
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},
-    bool? checkSize = true,
+    bool checkSize = true,
   });
 
   /// Cancel the download
