@@ -36,8 +36,7 @@ class UnzipDelegate implements UncompressDelegate {
     final bytes = await compressedFile.readAsBytes();
     final archive = ZipDecoder().decodeBytes(bytes);
     await compressedFile.delete();
-
-    for (final file in archive.files) {
+    await Future.wait(archive.files.map((file) async {
       if (!file.isFile) {
         return;
       }
@@ -45,10 +44,6 @@ class UnzipDelegate implements UncompressDelegate {
       final fileName = '$assetsDir/${file.name}';
       final outFile = await File(fileName).create(recursive: true);
       await outFile.writeAsBytes(file.content);
-    }
-
-    // await Future.wait(archive.files.map((file) async {
-    //
-    // }));
+    }));
   }
 }

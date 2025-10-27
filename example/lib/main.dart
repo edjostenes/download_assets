@@ -121,11 +121,11 @@ class MyHomePageState extends State<MyHomePage> {
           message = 'Cancelled by user';
           setState(() {});
         },
-        assetsUrls: [
-          const AssetUrl(url: 'https://filebin.net/ao8ffbye1vm3my2g/image_1.png'),
-          const AssetUrl(url: 'https://filebin.net/ao8ffbye1vm3my2g/assets.zip'),
-          const AssetUrl(url: 'https://filebin.net/ao8ffbye1vm3my2g/image_2.png'),
-          const AssetUrl(url: 'https://filebin.net/ao8ffbye1vm3my2g/image_3.png'),
+        assetsUrls: const [
+          AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/image_1.png'),
+          AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/assets.zip'),
+          AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/image_2.png'),
+          AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/image_3.png'),
         ],
         onProgress: (progressValue) {
           value = progressValue;
