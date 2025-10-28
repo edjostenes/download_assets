@@ -58,7 +58,7 @@ class MyHomePageState extends State<MyHomePage> {
               height: 150,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: FileImage(File('${downloadAssetsController.assetsDir}/image_3.jpeg')),
+                  image: FileImage(File('${downloadAssetsController.assetsDir}/dart.jpeg')),
                   fit: BoxFit.fitWidth,
                 ),
               ),
@@ -68,7 +68,7 @@ class MyHomePageState extends State<MyHomePage> {
               height: 150,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: FileImage(File('${downloadAssetsController.assetsDir}/image_1.png')),
+                  image: FileImage(File('${downloadAssetsController.assetsDir}/flutter.png')),
                   fit: BoxFit.fitWidth,
                 ),
               ),
