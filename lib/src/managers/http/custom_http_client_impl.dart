@@ -43,36 +43,32 @@ class CustomHttpClientImpl implements CustomHttpClient {
 
   @override
   Future<int> checkSize(String urlPath) async {
-    try {
-      final response = await Dio().head(
-        urlPath,
-        options: Options(
-          headers: {
-            HttpHeaders.acceptEncodingHeader: '*',
-            'Cache-Control': 'no-cache',
-          },
-          responseType: ResponseType.plain,
-          followRedirects: true,
-          maxRedirects: 5,
-          receiveDataWhenStatusError: true,
-          validateStatus: (status) => status! < 500,
-        ),
-      );
+    final response = await Dio().head(
+      urlPath,
+      options: Options(
+        headers: {
+          HttpHeaders.acceptEncodingHeader: '*',
+          'Cache-Control': 'no-cache',
+        },
+        responseType: ResponseType.plain,
+        followRedirects: true,
+        maxRedirects: 10,
+        receiveDataWhenStatusError: true,
+        validateStatus: (status) => status! < 500,
+      ),
+    );
 
-      if (response.statusCode != 200) {
-        return 0;
-      }
-
-      final contentLength = response.headers.value(Headers.contentLengthHeader);
-
-      if (contentLength == null) {
-        return 0;
-      }
-
-      return int.tryParse(contentLength) ?? 0;
-    } catch (e) {
-      return 0;
+    if (response.statusCode != 200) {
+      throw DownloadAssetsException.noHeaders();
     }
+
+    final contentLength = response.headers.value(Headers.contentLengthHeader);
+
+    if (contentLength == null) {
+      throw DownloadAssetsException.noContentLength();
+    }
+
+    return int.parse(contentLength);
   }
 
   @override

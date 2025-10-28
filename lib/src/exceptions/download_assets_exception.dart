@@ -28,6 +28,16 @@ class DownloadAssetsException implements Exception {
     this.downloadCancelled = false,
   });
 
+  DownloadAssetsException.noHeaders()
+      : _message = 'Fail to get HTTP headers',
+        exception = null,
+        downloadCancelled = false;
+
+  DownloadAssetsException.noContentLength()
+      : _message = 'Fail to get content length from server',
+        exception = null,
+        downloadCancelled = false;
+
   /// The underlying exception that caused the error.
   final Exception? exception;
 
