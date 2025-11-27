@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
 abstract interface class CustomHttpClient {
-  Future<Response> download(
+  Future<void> download(
     String urlPath,
     String savePath, {
     ProgressCallback? onReceiveProgress,

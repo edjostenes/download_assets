@@ -9,7 +9,7 @@ class CustomHttpClientImpl implements CustomHttpClient {
   CancelToken? _cancelToken;
 
   @override
-  Future<Response> download(
+  Future<void> download(
     String urlPath,
     String savePath, {
     ProgressCallback? onReceiveProgress,
@@ -24,7 +24,7 @@ class CustomHttpClientImpl implements CustomHttpClient {
         headers.addAll(requestExtraHeaders);
       }
 
-      return await Dio().download(
+      await Dio().download(
         urlPath,
         savePath,
         cancelToken: _cancelToken,

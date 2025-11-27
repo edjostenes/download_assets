@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 
 import 'download_assets_controller.dart';
@@ -27,7 +28,12 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     }
 
     final rootDir = await fileManager.getApplicationPath();
-    _assetsDir = '$rootDir/$assetDir';
+
+    if (kIsWeb) {
+      _assetsDir = rootDir;
+    } else {
+      _assetsDir = '$rootDir/$assetDir';
+    }
   }
 
   @override
@@ -58,7 +64,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     required List<AssetUrl> assetsUrls,
     List<UncompressDelegate> uncompressDelegates = const [UnzipDelegate()],
     Function(double)? onProgress,
-    Function()? onStartUnziping,
+    Function()? onStartUnzipping,
     Function()? onCancel,
     Function()? onDone,
     Map<String, dynamic>? requestQueryParams,
@@ -109,7 +115,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
         );
       }
 
-      onStartUnziping?.call();
+      onStartUnzipping?.call();
 
       for (final asset in assets) {
         final fileExtension = asset.extension;
