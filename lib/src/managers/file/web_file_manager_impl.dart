@@ -1,8 +1,17 @@
+import 'dart:convert';
 import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../download_assets.dart';
 import 'file_manager.dart';
 
 class WebFileManagerImpl implements FileManager {
+  static const String _prefix = 'file_manager_';
+  late SharedPreferences _prefs;
+
+  Future<SharedPreferences> get _preferences async => _prefs = await SharedPreferences.getInstance();
+
   @override
   Future<void> createDirectory(String directoryPath, {bool recursive = false}) {
     // TODO: implement createDirectory
@@ -10,38 +19,55 @@ class WebFileManagerImpl implements FileManager {
   }
 
   @override
-  Future<void> deleteDirectory(String directoryPath, {bool recursive = false}) {
-    // TODO: implement deleteDirectory
-    throw UnimplementedError();
+  Future<void> deleteDirectory(String directoryPath, {bool recursive = false}) async {
+    await _preferences;
+    final keysToRemove = _prefs.getKeys()
+        .where((key) => key.startsWith('$_prefix$directoryPath/'))
+        .toList();
+
+    for (final key in keysToRemove) {
+      await _prefs.remove(key);
+    }
   }
 
   @override
-  Future<bool> directoryExists(String directory) {
-    // TODO: implement directoryExists
-    throw UnimplementedError();
+  Future<bool> directoryExists(String directory) async {
+    await _preferences;
+    return _prefs.getKeys().any((key) => key.startsWith('$_prefix$directory/'));
   }
 
   @override
-  Future<bool> fileExists(String fileDir) {
-    // TODO: implement fileExists
-    throw UnimplementedError();
+  Future<bool> fileExists(String fileDir) async {
+    await _preferences;
+    return _prefs.containsKey('$_prefix$fileDir');
   }
 
   @override
-  Future<String> getApplicationPath() {
-    // TODO: implement getApplicationPath
-    throw UnimplementedError();
+  Future<String> getApplicationPath() async => '';
+
+  @override
+  Future<Uint8List> readFile(String path) async {
+    await _preferences;
+    final fileKey = '$_prefix$path';
+    final base64String = _prefs.getString(fileKey);
+
+    if (base64String == null) {
+      throw DownloadAssetsException('Fail to read file: $path');
+    }
+
+    final data = base64.decode(fileKey);
+    return Uint8List.fromList(data);
   }
 
   @override
-  Future<Uint8List> readFile(String path) {
-    // TODO: implement readFile
-    throw UnimplementedError();
-  }
+  Future<void> writeFile(String path, Uint8List data) async {
+    await _preferences;
+    final fileKey = '$_prefix$path';
+    final base64String = base64.encode(data as List<int>);
+    final success = await _prefs.setString(fileKey, base64String);
 
-  @override
-  Future<void> writeFile(String path, Uint8List data) {
-    // TODO: implement writeFile
-    throw UnimplementedError();
+    if (!success) {
+      throw DownloadAssetsException('Fail to save file: $path');
+    }
   }
 }
