@@ -6,6 +6,7 @@ import 'exceptions/download_assets_exception.dart';
 import 'managers/file/file_manager.dart';
 import 'managers/http/custom_http_client.dart';
 import 'uncompress_delegate/uncompress_delegate.dart';
+import 'uncompress_delegate/web_uncompress_delegate.dart';
 
 DownloadAssetsController createObject({required FileManager fileManager, required CustomHttpClient customHttpClient}) =>
     DownloadAssetsControllerImpl(fileManager: fileManager, customHttpClient: customHttpClient);
@@ -62,7 +63,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   @override
   Future startDownload({
     required List<AssetUrl> assetsUrls,
-    List<UncompressDelegate> uncompressDelegates = const [UnzipDelegate()],
+    List<UncompressDelegate> uncompressDelegates = const [kIsWeb ? WebUncompressDelegate() : UnzipDelegate()],
     Function(double)? onProgress,
     Function()? onStartUnzipping,
     Function()? onCancel,
@@ -138,7 +139,9 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
       }
 
       rethrow;
-    } on Exception catch (e) {
+    } on Exception catch (e, st) {
+      print(e.toString());
+      print(st.toString());
       throw DownloadAssetsException(e.toString(), exception: e);
     }
   }

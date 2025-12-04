@@ -1,6 +1,10 @@
+import 'package:flutter/foundation.dart';
+
 import 'download_assets_controller_impl.dart';
 import 'managers/file/file_manager_impl.dart';
+import 'managers/file/web_file_manager_impl.dart';
 import 'managers/http/custom_http_client_impl.dart';
+import 'managers/http/web_custom_http_client_impl.dart';
 import 'uncompress_delegate/uncompress_delegate.dart';
 
 class AssetUrl {
@@ -11,10 +15,15 @@ class AssetUrl {
 }
 
 abstract class DownloadAssetsController {
-  factory DownloadAssetsController() => createObject(
-        fileManager: FileManagerImpl(),
-        customHttpClient: CustomHttpClientImpl(),
-      );
+  factory DownloadAssetsController() => kIsWeb
+      ? createObject(
+          fileManager: WebFileManagerImpl(),
+          customHttpClient: WebCustomHttpClientImpl(fileManager: WebFileManagerImpl()),
+        )
+      : createObject(
+          fileManager: FileManagerImpl(),
+          customHttpClient: CustomHttpClientImpl(),
+        );
 
   /// Initialization method for setting up the assetsDir, which is required to be called during app initialization.
   /// [assetDir] -> Not required. Path to directory where your zipFile will be downloaded and unzipped (default value is getApplicationPath + assets)

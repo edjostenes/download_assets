@@ -1,4 +1,6 @@
-import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
+
+
+import 'dart:typed_data';
 
 abstract interface class FileManager {
   Future<bool> directoryExists(String directory);

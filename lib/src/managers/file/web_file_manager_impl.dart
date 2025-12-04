@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
+import 'dart:typed_data';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -7,22 +7,21 @@ import '../../../download_assets.dart';
 import 'file_manager.dart';
 
 class WebFileManagerImpl implements FileManager {
-  static const String _prefix = 'file_manager_';
+  static const String _prefix = 'file_manager';
   late SharedPreferences _prefs;
 
   Future<SharedPreferences> get _preferences async => _prefs = await SharedPreferences.getInstance();
 
   @override
   Future<void> createDirectory(String directoryPath, {bool recursive = false}) {
-    // TODO: implement createDirectory
-    throw UnimplementedError();
+    return Future.value();
   }
 
   @override
   Future<void> deleteDirectory(String directoryPath, {bool recursive = false}) async {
     await _preferences;
     final keysToRemove = _prefs.getKeys()
-        .where((key) => key.startsWith('$_prefix$directoryPath/'))
+        .where((key) => key.startsWith('$_prefix$directoryPath'))
         .toList();
 
     for (final key in keysToRemove) {
@@ -33,7 +32,7 @@ class WebFileManagerImpl implements FileManager {
   @override
   Future<bool> directoryExists(String directory) async {
     await _preferences;
-    return _prefs.getKeys().any((key) => key.startsWith('$_prefix$directory/'));
+    return _prefs.getKeys().any((key) => key.startsWith('$_prefix$directory'));
   }
 
   @override
@@ -55,7 +54,7 @@ class WebFileManagerImpl implements FileManager {
       throw DownloadAssetsException('Fail to read file: $path');
     }
 
-    final data = base64.decode(fileKey);
+    final data = base64.decode(base64String);
     return Uint8List.fromList(data);
   }
 

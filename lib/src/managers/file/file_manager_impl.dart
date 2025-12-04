@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
+import 'dart:typed_data';
 
 import 'package:path_provider/path_provider.dart';
 
