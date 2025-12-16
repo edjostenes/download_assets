@@ -47,10 +47,13 @@ class WebCustomHttpClientImpl implements CustomHttpClient {
   }
 
   @override
-  Future<void> download(String urlPath, String savePath,
-      {ProgressCallback? onReceiveProgress,
-      Map<String, dynamic>? requestQueryParams,
-      Map<String, String> requestExtraHeaders = const {}}) async {
+  Future<void> download(
+    String urlPath,
+    String savePath, {
+    ProgressCallback? onReceiveProgress,
+    Map<String, dynamic>? requestQueryParams,
+    Map<String, String> requestExtraHeaders = const {},
+  }) async {
     _cancelToken = CancelToken();
     try {
       final response = await Dio().get<Uint8List>(

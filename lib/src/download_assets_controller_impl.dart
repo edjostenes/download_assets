@@ -38,6 +38,9 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   }
 
   @override
+  Future<Uint8List?> getAssetFromWeb(String fileName) => fileManager.readFile(fileName);
+
+  @override
   Future<bool> assetsDirAlreadyExists() async {
     assert(assetsDir != null, 'DownloadAssets has not been initialized. Call init method first');
     return await fileManager.directoryExists(_assetsDir!);
@@ -140,9 +143,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
 
       rethrow;
     } on Exception catch (e, st) {
-      print(e.toString());
-      print(st.toString());
-      throw DownloadAssetsException(e.toString(), exception: e);
+      throw DownloadAssetsException(e.toString(), exception: e, stackTrace: st);
     }
   }
 

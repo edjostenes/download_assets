@@ -25,21 +25,26 @@ class DownloadAssetsException implements Exception {
   DownloadAssetsException(
     this._message, {
     this.exception,
+    this.stackTrace,
     this.downloadCancelled = false,
   });
 
   DownloadAssetsException.noHeaders()
       : _message = 'Fail to get HTTP headers',
         exception = null,
+        stackTrace = null,
         downloadCancelled = false;
 
   DownloadAssetsException.noContentLength()
       : _message = 'Fail to get content length from server',
         exception = null,
+        stackTrace = null,
         downloadCancelled = false;
 
   /// The underlying exception that caused the error.
   final Exception? exception;
+
+  final StackTrace? stackTrace;
 
   /// Indicates if the download was explicitly cancelled by the user.
   final bool downloadCancelled;

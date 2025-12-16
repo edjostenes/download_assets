@@ -7,22 +7,17 @@ import '../../../download_assets.dart';
 import 'file_manager.dart';
 
 class WebFileManagerImpl implements FileManager {
-  static const String _prefix = 'file_manager';
   late SharedPreferences _prefs;
 
   Future<SharedPreferences> get _preferences async => _prefs = await SharedPreferences.getInstance();
 
   @override
-  Future<void> createDirectory(String directoryPath, {bool recursive = false}) {
-    return Future.value();
-  }
+  Future<void> createDirectory(String directoryPath, {bool recursive = false}) => Future.value();
 
   @override
   Future<void> deleteDirectory(String directoryPath, {bool recursive = false}) async {
     await _preferences;
-    final keysToRemove = _prefs.getKeys()
-        .where((key) => key.startsWith('$_prefix$directoryPath'))
-        .toList();
+    final keysToRemove = _prefs.getKeys().where((key) => key.startsWith(directoryPath)).toList();
 
     for (final key in keysToRemove) {
       await _prefs.remove(key);
@@ -32,13 +27,13 @@ class WebFileManagerImpl implements FileManager {
   @override
   Future<bool> directoryExists(String directory) async {
     await _preferences;
-    return _prefs.getKeys().any((key) => key.startsWith('$_prefix$directory'));
+    return _prefs.getKeys().any((key) => key.startsWith(directory));
   }
 
   @override
   Future<bool> fileExists(String fileDir) async {
     await _preferences;
-    return _prefs.containsKey('$_prefix$fileDir');
+    return _prefs.containsKey(fileDir);
   }
 
   @override
@@ -47,7 +42,7 @@ class WebFileManagerImpl implements FileManager {
   @override
   Future<Uint8List> readFile(String path) async {
     await _preferences;
-    final fileKey = '$_prefix$path';
+    final fileKey = path;
     final base64String = _prefs.getString(fileKey);
 
     if (base64String == null) {
@@ -61,7 +56,7 @@ class WebFileManagerImpl implements FileManager {
   @override
   Future<void> writeFile(String path, Uint8List data) async {
     await _preferences;
-    final fileKey = '$_prefix$path';
+    final fileKey = path;
     final base64String = base64.encode(data as List<int>);
     final success = await _prefs.setString(fileKey, base64String);
 

@@ -19,11 +19,13 @@ class WebUncompressDelegate implements UncompressDelegate {
       final archive = ZipDecoder().decodeBytes(zipData);
 
       for (final file in archive) {
-        if (file.isFile) {
-          final filePath = '$assetsDir/${file.name}';
-          final fileData = Uint8List.fromList(file.content);
-          await fileManager.writeFile(filePath, fileData);
+        if (!file.isFile) {
+          continue;
         }
+
+        final filePath = '$assetsDir/${file.name}';
+        final fileData = Uint8List.fromList(file.content);
+        await fileManager.writeFile(filePath, fileData);
       }
     } catch (e) {
       throw DownloadAssetsException('Error to extract files: $e');

@@ -15,15 +15,11 @@ class AssetUrl {
 }
 
 abstract class DownloadAssetsController {
-  factory DownloadAssetsController() => kIsWeb
-      ? createObject(
-          fileManager: WebFileManagerImpl(),
-          customHttpClient: WebCustomHttpClientImpl(fileManager: WebFileManagerImpl()),
-        )
-      : createObject(
-          fileManager: FileManagerImpl(),
-          customHttpClient: CustomHttpClientImpl(),
-        );
+  factory DownloadAssetsController() {
+    final fileManager = kIsWeb ? WebFileManagerImpl() : FileManagerImpl();
+    final customHttpClient = kIsWeb ? WebCustomHttpClientImpl(fileManager: fileManager) : CustomHttpClientImpl();
+    return createObject(fileManager: fileManager, customHttpClient: customHttpClient);
+  }
 
   /// Initialization method for setting up the assetsDir, which is required to be called during app initialization.
   /// [assetDir] -> Not required. Path to directory where your zipFile will be downloaded and unzipped (default value is getApplicationPath + assets)
@@ -35,6 +31,8 @@ abstract class DownloadAssetsController {
 
   /// Directory that keeps all assets
   String? get assetsDir;
+
+  Future<Uint8List?> getAssetFromWeb(String fileName);
 
   /// If assets directory was already created it assumes that the content was already downloaded.
   Future<bool> assetsDirAlreadyExists();
