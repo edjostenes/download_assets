@@ -28,14 +28,15 @@ await downloadAssetsController.init();
 Starts the asset download process.
 
 * *assetsUrls*: A list of [AssetUrl] objects representing each file to be downloaded.
-* *uncompressDelegates*: A list of custom decompression delegates for different types of file, such
+* *uncompressDelegates*: A list of custom decompression delegates for different types of files, such
   as ZIP, RAR, etc (optional).
-* *onStartUnziping*: Called right before the start of the uncompressing process (optional).
-* *onProgress*: It's not required. Called after each iteration returning the current progress (optional). The double parameter ranges from 0 to 1, where 1 indicates the completion of the download process.
+* *onStartUnzipping*: Called right before the start of the uncompressing process (optional).
+* *onProgress*: Called after each iteration returning the current progress (optional). The double parameter ranges from 0 to 1, where 1 indicates the completion of the download process.
 * *onDone*: Called when all files have been downloaded and uncompressed (optional).
 * *onCancel*: Cancels the ongoing download (optional).
 * *requestQueryParams*: Query params to be used in the request (optional).
 * *requestExtraHeaders*: Extra headers to be added in the request (optional).
+* *checkSize*: Specifies if the size of the file should be checked first before starting download (optional).
 
 ```dart
 await downloadAssetsController.startDownload(
@@ -66,7 +67,7 @@ class AssetUrl {
   final String url;
   final String? fileName;
 
-  AssetUrl({
+  const AssetUrl({
     required this.url,
     this.fileName,
   });
@@ -75,11 +76,19 @@ class AssetUrl {
 
 ### *clearAssets*
 
-Remove all downloaded assets from local storage.
+Removes all downloaded assets from local storage.
 
 ```dart
 await downloadAssetsController.clearAssets();
 ```
+
+### *getAssetFromWeb*
+
+```dart
+await downloadAssetsController.getAssetFromWeb('<file_name>.<file_extension>');
+```
+
+**Note:** This method is only available on web version
 
 ### *assetsDir*
 
@@ -99,7 +108,7 @@ return await downloadAssetsController.assetsDirAlreadyExists();
 
 ### *assetsFileExists*
 
-Return **true** if the file exists.
+Returns **true** if the file exists.
 
 ```dart
 return await downloadAssetsController.assetsFileExists(<file_name>);
@@ -128,9 +137,9 @@ abstract class UncompressDelegate {
 }
 ```
 
-**Note**: This kind of delegate is essential for enabling the download process to handle various
+**Note:** This kind of delegate is essential for enabling the download process to handle various
 file formats by implementing the necessary decompression logic. This flexibility allows users to
-download and work with a wide range of compressed file types effortlessly. **UnzipDelegate()**, is
+download and work with a wide range of compressed file types effortlessly. **UnzipDelegate()** is
 already included, which handles the decompression of ZIP files.
 
 ## Example

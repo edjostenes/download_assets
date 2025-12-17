@@ -54,7 +54,7 @@ class MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           if (downloaded) ...[
-            if (!kIsWeb) ...[
+            if (!kIsWeb && !kIsWasm) ...[
               Container(
                 width: 150,
                 height: 150,

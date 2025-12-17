@@ -16,8 +16,9 @@ class AssetUrl {
 
 abstract class DownloadAssetsController {
   factory DownloadAssetsController() {
-    final fileManager = kIsWeb ? WebFileManagerImpl() : FileManagerImpl();
-    final customHttpClient = kIsWeb ? WebCustomHttpClientImpl(fileManager: fileManager) : CustomHttpClientImpl();
+    const isWeb = kIsWeb || kIsWasm;
+    final fileManager = isWeb ? WebFileManagerImpl() : FileManagerImpl();
+    final customHttpClient = isWeb ? WebCustomHttpClientImpl(fileManager: fileManager) : CustomHttpClientImpl();
     return createObject(fileManager: fileManager, customHttpClient: customHttpClient);
   }
 
@@ -32,6 +33,7 @@ abstract class DownloadAssetsController {
   /// Directory that keeps all assets
   String? get assetsDir;
 
+  /// Get asset from web storage (only available on web)
   Future<Uint8List?> getAssetFromWeb(String fileName);
 
   /// If assets directory was already created it assumes that the content was already downloaded.

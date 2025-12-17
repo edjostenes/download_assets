@@ -30,7 +30,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
 
     final rootDir = await fileManager.getApplicationPath();
 
-    if (kIsWeb) {
+    if (kIsWeb || kIsWasm) {
       _assetsDir = rootDir;
     } else {
       _assetsDir = '$rootDir/$assetDir';
@@ -38,7 +38,10 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   }
 
   @override
-  Future<Uint8List?> getAssetFromWeb(String fileName) => fileManager.readFile(fileName);
+  Future<Uint8List?> getAssetFromWeb(String fileName) {
+    assert(!kIsWeb, 'This method is only available on web');
+    return fileManager.readFile(fileName);
+  }
 
   @override
   Future<bool> assetsDirAlreadyExists() async {
