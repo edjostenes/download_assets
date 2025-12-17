@@ -15,7 +15,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'Download Assets Demo',
-    theme: ThemeData(primarySwatch: Colors.blue, visualDensity: VisualDensity.adaptivePlatformDensity),
+    theme: ThemeData(
+      primarySwatch: Colors.blue,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+    ),
     home: const MyHomePage(title: 'Download Assets'),
   );
 }
@@ -30,7 +33,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  DownloadAssetsController downloadAssetsController = DownloadAssetsController();
+  DownloadAssetsController downloadAssetsController =
+      DownloadAssetsController();
   String message = 'Press the download button to start the download';
   bool downloaded = false;
   double value = 0.0;
@@ -60,7 +64,9 @@ class MyHomePageState extends State<MyHomePage> {
                 height: 150,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: FileImage(File('${downloadAssetsController.assetsDir}/dart.jpeg')),
+                    image: FileImage(
+                      File('${downloadAssetsController.assetsDir}/dart.jpeg'),
+                    ),
                     fit: BoxFit.fitWidth,
                   ),
                 ),
@@ -70,21 +76,30 @@ class MyHomePageState extends State<MyHomePage> {
                 height: 150,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: FileImage(File('${downloadAssetsController.assetsDir}/flutter.png')),
+                    image: FileImage(
+                      File('${downloadAssetsController.assetsDir}/flutter.png'),
+                    ),
                     fit: BoxFit.fitWidth,
                   ),
                 ),
               ),
             ] else ...[
-              _WebImage(fileName: '/dart.jpeg', downloadAssetsController: downloadAssetsController),
-              _WebImage(fileName: '/flutter.png', downloadAssetsController: downloadAssetsController),
+              _WebImage(
+                fileName: '/dart.jpeg',
+                downloadAssetsController: downloadAssetsController,
+              ),
+              _WebImage(
+                fileName: '/flutter.png',
+                downloadAssetsController: downloadAssetsController,
+              ),
             ],
           ],
           TweenAnimationBuilder<double>(
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOut,
             tween: Tween<double>(begin: 0, end: value),
-            builder: (context, value, _) => LinearProgressIndicator(minHeight: 10, value: value),
+            builder: (context, value, _) =>
+                LinearProgressIndicator(minHeight: 10, value: value),
           ),
           Text(message, textAlign: TextAlign.center),
         ],
@@ -93,7 +108,11 @@ class MyHomePageState extends State<MyHomePage> {
     floatingActionButton: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        FloatingActionButton(onPressed: _downloadAssets, tooltip: 'Download', child: const Icon(Icons.arrow_downward)),
+        FloatingActionButton(
+          onPressed: _downloadAssets,
+          tooltip: 'Download',
+          child: const Icon(Icons.arrow_downward),
+        ),
         const SizedBox(width: 25),
         FloatingActionButton(
           onPressed: () async {
@@ -104,13 +123,18 @@ class MyHomePageState extends State<MyHomePage> {
           child: const Icon(Icons.refresh),
         ),
         const SizedBox(width: 25),
-        FloatingActionButton(onPressed: _cancel, tooltip: 'Cancel', child: const Icon(Icons.cancel_outlined)),
+        FloatingActionButton(
+          onPressed: _cancel,
+          tooltip: 'Cancel',
+          child: const Icon(Icons.cancel_outlined),
+        ),
       ],
     ), // This trailing comma makes auto-formatting nicer for build methods.
   );
 
   Future _downloadAssets() async {
-    final assetsDownloaded = await downloadAssetsController.assetsDirAlreadyExists();
+    final assetsDownloaded = await downloadAssetsController
+        .assetsDirAlreadyExists();
 
     if (assetsDownloaded) {
       setState(() {
@@ -128,21 +152,35 @@ class MyHomePageState extends State<MyHomePage> {
           setState(() {});
         },
         assetsUrls: const [
-          AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/image_1.png'),
-          AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/assets.zip'),
-          AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/image_2.png'),
-          AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/image_3.png'),
+          AssetUrl(
+            url:
+                'https://github.com/edjostenes/download_assets/raw/main/download/image_1.png',
+          ),
+          AssetUrl(
+            url:
+                'https://github.com/edjostenes/download_assets/raw/main/download/assets.zip',
+          ),
+          AssetUrl(
+            url:
+                'https://github.com/edjostenes/download_assets/raw/main/download/image_2.png',
+          ),
+          AssetUrl(
+            url:
+                'https://github.com/edjostenes/download_assets/raw/main/download/image_3.png',
+          ),
         ],
         onProgress: (progressValue) {
           value = progressValue;
           setState(() {
-            message = 'Downloading - ${(progressValue * 100).toStringAsFixed(2)}';
+            message =
+                'Downloading - ${(progressValue * 100).toStringAsFixed(2)}';
           });
         },
         onDone: () {
           setState(() {
             downloaded = true;
-            message = 'Download completed\nClick in refresh button to force download';
+            message =
+                'Download completed\nClick in refresh button to force download';
           });
         },
       );
@@ -158,7 +196,10 @@ class MyHomePageState extends State<MyHomePage> {
 }
 
 class _WebImage extends StatelessWidget {
-  const _WebImage({required this.downloadAssetsController, required this.fileName});
+  const _WebImage({
+    required this.downloadAssetsController,
+    required this.fileName,
+  });
 
   final DownloadAssetsController downloadAssetsController;
   final String fileName;
