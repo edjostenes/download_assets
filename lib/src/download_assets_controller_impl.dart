@@ -39,7 +39,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
 
   @override
   Future<Uint8List?> getAssetFromWeb(String fileName) {
-    assert(!kIsWeb, 'This method is only available on web');
+    assert(kIsWeb || kIsWasm, 'This method is only available on web');
     return fileManager.readFile(fileName);
   }
 
