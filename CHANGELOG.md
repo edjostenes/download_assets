@@ -1,3 +1,8 @@
+## 4.1.0 - December 16, 2025
+
+* Added support for web version
+* Added method getImageFromWeb (only available on web)
+
 ## 4.0.0 - May 13, 2025
 
 * **[BREAKING CHANGE]** The `startDownload` method no longer accepts a list of `String` URLs. It now requires a list of `AssetUrl` objects instead.
