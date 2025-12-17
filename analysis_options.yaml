@@ -9,25 +9,11 @@
 # packages, and plugins designed to encourage good coding practices.
 include: package:flutter_lints/flutter.yaml
 
-analyzer:
-  exclude:
-    - '**/*.g.dart'
-    - '**/*.config.dart'
-
-  strong-mode:
-    implicit-casts: true
-    implicit-dynamic: true
-
-formatter:
-  page_width: 120
-  trailing_commas: preserve
-
 linter:
   # The lint rules applied to this project can be customized in the
   # section below to disable rules from the `package:flutter_lints/flutter.yaml`
   # included above or to enable additional rules. A list of all available lints
-  # and their documentation is published at
-  # https://dart-lang.github.io/linter/lints/index.html.
+  # and their documentation is published at https://dart.dev/lints.
   #
   # Instead of disabling a lint rule for the entire project in the
   # section below, it can also be suppressed for a single line of code
@@ -35,35 +21,8 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
-    - always_declare_return_types
-    - avoid_bool_literals_in_conditional_expressions
-    - avoid_classes_with_only_static_members
-    - avoid_field_initializers_in_const_classes
-    - avoid_positional_boolean_parameters
-    - avoid_private_typedef_functions
-    - avoid_returning_this
-    - avoid_setters_without_getters
-    - avoid_void_async
-    - cancel_subscriptions
-    - close_sinks
-    - join_return_with_assignment
-    - literal_only_boolean_expressions
-    - no_adjacent_strings_in_list
-    - omit_local_variable_types
-    - prefer_asserts_in_initializer_lists
-    - prefer_const_constructors
-    - prefer_const_literals_to_create_immutables
-    - prefer_const_declarations
-    - prefer_final_in_for_each
-    - prefer_relative_imports
-    - prefer_single_quotes
-    - sort_constructors_first
-    - sort_unnamed_constructors_first
-    - test_types_in_equals
-    - throw_in_finally
-    - type_annotate_public_apis
-    - use_to_and_as_if_applicable
-
+    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
+    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
