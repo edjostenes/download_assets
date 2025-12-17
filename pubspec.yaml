@@ -12,7 +12,9 @@ dependencies:
   dio: ^5.9.0
   path: ^1.9.1
   archive: ^4.0.7
+  idb_shim: ^2.6.7+1
   path_provider: ^2.1.5
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   mocktail: ^1.0.4

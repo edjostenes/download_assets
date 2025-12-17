@@ -13,7 +13,7 @@ abstract class UncompressDelegate {
   /// [compressedFilePath] -> The path to the compressed asset file.
   /// [assetsDir] -> The directory where the uncompressed asset should be stored.
   /// Returns a [Future] representing the completion of the decompression process.
-  Future uncompress(String compressedFilePath, String assetsDir);
+  Future<void> uncompress(String compressedFilePath, String assetsDir);
 }
 
 /// A delegate for uncompressing ZIP files.
@@ -31,7 +31,7 @@ class UnzipDelegate implements UncompressDelegate {
   String get extension => '.zip';
 
   @override
-  Future uncompress(String compressedFilePath, String assetsDir) async {
+  Future<void> uncompress(String compressedFilePath, String assetsDir) async {
     final compressedFile = File(compressedFilePath);
     final bytes = await compressedFile.readAsBytes();
     final archive = ZipDecoder().decodeBytes(bytes);

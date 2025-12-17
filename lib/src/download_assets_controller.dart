@@ -1,6 +1,10 @@
+import 'package:flutter/foundation.dart';
+
 import 'download_assets_controller_impl.dart';
 import 'managers/file/file_manager_impl.dart';
+import 'managers/file/web_file_manager_impl.dart';
 import 'managers/http/custom_http_client_impl.dart';
+import 'managers/http/web_custom_http_client_impl.dart';
 import 'uncompress_delegate/uncompress_delegate.dart';
 
 class AssetUrl {
@@ -11,10 +15,12 @@ class AssetUrl {
 }
 
 abstract class DownloadAssetsController {
-  factory DownloadAssetsController() => createObject(
-        fileManager: FileManagerImpl(),
-        customHttpClient: CustomHttpClientImpl(),
-      );
+  factory DownloadAssetsController() {
+    const isWeb = kIsWeb || kIsWasm;
+    final fileManager = isWeb ? WebFileManagerImpl() : FileManagerImpl();
+    final customHttpClient = isWeb ? WebCustomHttpClientImpl(fileManager: fileManager) : CustomHttpClientImpl();
+    return createObject(fileManager: fileManager, customHttpClient: customHttpClient);
+  }
 
   /// Initialization method for setting up the assetsDir, which is required to be called during app initialization.
   /// [assetDir] -> Not required. Path to directory where your zipFile will be downloaded and unzipped (default value is getApplicationPath + assets)
@@ -26,6 +32,9 @@ abstract class DownloadAssetsController {
 
   /// Directory that keeps all assets
   String? get assetsDir;
+
+  /// Get asset from web storage (only available on web)
+  Future<Uint8List?> getAssetFromWeb(String fileName);
 
   /// If assets directory was already created it assumes that the content was already downloaded.
   Future<bool> assetsDirAlreadyExists();
@@ -42,7 +51,7 @@ abstract class DownloadAssetsController {
   /// [assetsUrls] -> A list of URLs representing each file to be downloaded. (http://{YOUR_DOMAIN}:{FILE_NAME}.{EXTENSION})
   /// [uncompressDelegates] -> An optional list of [UncompressDelegate] objects responsible for handling asset decompression, if needed.
   /// If the [uncompressDelegates] list is empty, the [UnzipDelegate] class is automatically added as a delegate for ZIP file decompression.
-  /// [onStartUnziping] -> Called right before the start of the uncompressing process.
+  /// [onStartUnzipping] -> Called right before the start of the uncompressing process.
   /// [onProgress] -> It's not required. Called after each iteration returning the current progress.
   /// The double parameter ranges from 0 to 1, where 1 indicates the completion of the download process.
   /// [onDone] -> Called when all files have been downloaded and uncompressed.
@@ -54,7 +63,7 @@ abstract class DownloadAssetsController {
     required List<AssetUrl> assetsUrls,
     List<UncompressDelegate> uncompressDelegates = const [UnzipDelegate()],
     Function(double)? onProgress,
-    Function()? onStartUnziping,
+    Function()? onStartUnzipping,
     Function()? onCancel,
     Function()? onDone,
     Map<String, dynamic>? requestQueryParams,

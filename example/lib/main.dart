@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:download_assets/download_assets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -53,26 +54,31 @@ class MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           if (downloaded) ...[
-            Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: FileImage(File('${downloadAssetsController.assetsDir}/dart.jpeg')),
-                  fit: BoxFit.fitWidth,
+            if (!kIsWeb && !kIsWasm) ...[
+              Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: FileImage(File('${downloadAssetsController.assetsDir}/dart.jpeg')),
+                    fit: BoxFit.fitWidth,
+                  ),
                 ),
               ),
-            ),
-            Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: FileImage(File('${downloadAssetsController.assetsDir}/flutter.png')),
-                  fit: BoxFit.fitWidth,
+              Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: FileImage(File('${downloadAssetsController.assetsDir}/flutter.png')),
+                    fit: BoxFit.fitWidth,
+                  ),
                 ),
               ),
-            ),
+            ] else ...[
+              _WebImage(fileName: '/dart.jpeg', downloadAssetsController: downloadAssetsController),
+              _WebImage(fileName: '/flutter.png', downloadAssetsController: downloadAssetsController),
+            ],
           ],
           TweenAnimationBuilder<double>(
             duration: const Duration(milliseconds: 250),
@@ -149,4 +155,34 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   void _cancel() => downloadAssetsController.cancelDownload();
+}
+
+class _WebImage extends StatelessWidget {
+  const _WebImage({required this.downloadAssetsController, required this.fileName});
+
+  final DownloadAssetsController downloadAssetsController;
+  final String fileName;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Uint8List?>(
+      future: downloadAssetsController.getAssetFromWeb(fileName),
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data != null) {
+          return Image.memory(
+            snapshot.data!,
+            height: 150,
+            width: 150,
+            fit: BoxFit.fitWidth,
+          );
+        }
+
+        if (snapshot.hasError) {
+          return Text(snapshot.error.toString());
+        }
+
+        return const SizedBox.shrink();
+      },
+    );
+  }
 }

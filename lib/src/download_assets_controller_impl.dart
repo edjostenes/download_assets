@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 
 import 'download_assets_controller.dart';
@@ -5,6 +6,7 @@ import 'exceptions/download_assets_exception.dart';
 import 'managers/file/file_manager.dart';
 import 'managers/http/custom_http_client.dart';
 import 'uncompress_delegate/uncompress_delegate.dart';
+import 'uncompress_delegate/web_uncompress_delegate.dart';
 
 DownloadAssetsController createObject({required FileManager fileManager, required CustomHttpClient customHttpClient}) =>
     DownloadAssetsControllerImpl(fileManager: fileManager, customHttpClient: customHttpClient);
@@ -27,7 +29,18 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     }
 
     final rootDir = await fileManager.getApplicationPath();
-    _assetsDir = '$rootDir/$assetDir';
+
+    if (kIsWeb || kIsWasm) {
+      _assetsDir = rootDir;
+    } else {
+      _assetsDir = '$rootDir/$assetDir';
+    }
+  }
+
+  @override
+  Future<Uint8List?> getAssetFromWeb(String fileName) {
+    assert(kIsWeb || kIsWasm, 'This method is only available on web');
+    return fileManager.readFile(fileName);
   }
 
   @override
@@ -56,9 +69,9 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   @override
   Future startDownload({
     required List<AssetUrl> assetsUrls,
-    List<UncompressDelegate> uncompressDelegates = const [UnzipDelegate()],
+    List<UncompressDelegate> uncompressDelegates = const [kIsWeb ? WebUncompressDelegate() : UnzipDelegate()],
     Function(double)? onProgress,
-    Function()? onStartUnziping,
+    Function()? onStartUnzipping,
     Function()? onCancel,
     Function()? onDone,
     Map<String, dynamic>? requestQueryParams,
@@ -109,7 +122,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
         );
       }
 
-      onStartUnziping?.call();
+      onStartUnzipping?.call();
 
       for (final asset in assets) {
         final fileExtension = asset.extension;
@@ -132,8 +145,8 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
       }
 
       rethrow;
-    } on Exception catch (e) {
-      throw DownloadAssetsException(e.toString(), exception: e);
+    } on Exception catch (e, st) {
+      throw DownloadAssetsException(e.toString(), exception: e, stackTrace: st);
     }
   }
 

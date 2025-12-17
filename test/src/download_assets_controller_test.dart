@@ -211,7 +211,7 @@ void main() {
       AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/image_2.png'),
       AssetUrl(url: 'https://github.com/edjostenes/download_assets/raw/main/download/image_3.png'),
     ];
-    Future<Response> customHttpClientDownload() => customHttpClient.download(
+    Future<void> customHttpClientDownload() => customHttpClient.download(
           any(),
           any(),
           onReceiveProgress: any(named: 'onReceiveProgress'),
