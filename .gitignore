@@ -21,18 +21,7 @@
 .project
 .settings/
 .vscode/
-.idea/*.
-.idea/git_toolbox_prj.xml
-.idea/misc.xml
-.idea/shelf/
-.idea/workspace.xml
-.idea/libraries/Dart_Packages.xml
-.idea/libraries/Flutter_Plugins.xml
-.idea/shelf/Dart_Changelist.xml
-
-!.idea/libraries/Dart_SDK.xml
-!.idea/modules.xml
-!.idea/vcs.xml
+**/.idea/
 
 # Flutter repo-specific
 /bin/cache/
@@ -139,5 +128,3 @@ app.*.symbols
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 !/dev/ci/**/Gemfile.lock
-
-example/android/.idea/*.xml
